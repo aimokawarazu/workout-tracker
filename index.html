@@ -1,0 +1,1884 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="筋トレ記録" />
+  <title>筋トレ記録</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --bg-soft:#111a2d;
+      --bg-card:#131f36;
+      --bg-card-2:#172642;
+      --line:rgba(255,255,255,.08);
+      --text:#eef4ff;
+      --muted:#92a4c4;
+      --accent:#3b82f6;
+      --accent-2:#60a5fa;
+      --accent-soft:rgba(59,130,246,.16);
+      --success:#38bdf8;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --green:#22c55e;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:20px;
+      --radius-sm:14px;
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+      --tab-h: 78px;
+      --cta-h: 70px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(59,130,246,.18), transparent 28%),
+        linear-gradient(180deg,#09111e 0%, #0b1220 32%, #0b1220 100%);
+      color:var(--text);
+      overflow:hidden;
+    }
+    button,input,textarea,select{
+      font:inherit;
+      color:inherit;
+    }
+    .app{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      padding:calc(12px + var(--safe-top)) 16px 12px;
+      background:linear-gradient(180deg, rgba(11,18,32,.95), rgba(11,18,32,.78) 60%, rgba(11,18,32,0));
+      backdrop-filter: blur(10px);
+    }
+    .title{
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:.02em;
+      margin:0;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:6px;
+    }
+    .screen{
+      flex:1;
+      overflow:auto;
+      padding:10px 16px calc(var(--tab-h) + var(--cta-h) + var(--safe-bottom) + 28px);
+      scroll-behavior:smooth;
+    }
+    .screen.hidden{display:none}
+    .section-title{
+      margin:18px 2px 10px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .hero{
+      background:linear-gradient(180deg, rgba(59,130,246,.22), rgba(59,130,246,.10));
+      border:1px solid rgba(96,165,250,.22);
+      border-radius:24px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .hero-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .hero-date{
+      font-size:24px;
+      font-weight:800;
+      line-height:1.2;
+    }
+    .hero-mini{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:4px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:34px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--text);
+      font-size:13px;
+      font-weight:700;
+    }
+    .chip.primary{
+      background:var(--accent-soft);
+      border-color:rgba(96,165,250,.25);
+      color:#dbeafe;
+    }
+    .action-row{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:16px;
+      min-height:48px;
+      padding:0 16px;
+      background:#1a2845;
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      font-weight:800;
+      letter-spacing:.01em;
+      cursor:pointer;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      background:linear-gradient(180deg, #3b82f6, #2563eb);
+      border-color:rgba(147,197,253,.35);
+      color:white;
+    }
+    .btn.ghost{
+      background:rgba(255,255,255,.05);
+      box-shadow:none;
+    }
+    .btn.danger{
+      background:rgba(239,68,68,.14);
+      border-color:rgba(239,68,68,.25);
+      color:#fecaca;
+    }
+    .btn.small{
+      min-height:38px;
+      padding:0 12px;
+      border-radius:12px;
+      font-size:13px;
+      font-weight:700;
+      box-shadow:none;
+    }
+    .btn.icon{
+      width:44px;
+      min-width:44px;
+      padding:0;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(19,31,54,.98), rgba(16,27,46,.98));
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow:var(--shadow);
+      margin-bottom:14px;
+    }
+    .exercise-card{
+      padding:14px;
+      border-radius:24px;
+      background:
+        radial-gradient(circle at top right, rgba(59,130,246,.16), transparent 35%),
+        linear-gradient(180deg, #12203a 0%, #101a2e 100%);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .exercise-header{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .exercise-no{
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      background:var(--accent-soft);
+      border:1px solid rgba(96,165,250,.24);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#dbeafe;
+      font-weight:800;
+      flex:0 0 auto;
+    }
+    .exercise-title{
+      font-size:18px;
+      font-weight:800;
+      line-height:1.3;
+      margin:0;
+    }
+    .exercise-sub{
+      margin-top:6px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .exercise-top-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .stat{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;
+      padding:10px 12px;
+      min-height:72px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .stat-label{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .stat-value{
+      font-size:19px;
+      font-weight:800;
+    }
+    .delta.positive{color:#93c5fd}
+    .delta.negative{color:#fca5a5}
+    .delta.neutral{color:#cbd5e1}
+    .memo-area{
+      width:100%;
+      min-height:70px;
+      resize:vertical;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--text);
+      border-radius:16px;
+      padding:14px;
+      outline:none;
+      margin-bottom:12px;
+      font-size:16px;
+    }
+    .sets-wrap{
+      overflow:hidden;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+    }
+    .set-head,.set-row{
+      display:grid;
+      grid-template-columns:58px 1fr 1fr 92px 44px;
+      gap:8px;
+      align-items:center;
+      padding:10px;
+    }
+    .set-head{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      background:rgba(255,255,255,.03);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .set-row{
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .set-row:last-child{border-bottom:none}
+    .set-row.done{
+      background:rgba(59,130,246,.08);
+    }
+    .set-index{
+      font-weight:800;
+      text-align:center;
+      color:#dbeafe;
+      font-size:15px;
+    }
+    .num-input{
+      width:100%;
+      height:52px;
+      border:none;
+      outline:none;
+      border-radius:14px;
+      background:#0f1728;
+      border:1px solid rgba(255,255,255,.08);
+      padding:0 12px;
+      text-align:center;
+      font-size:18px;
+      font-weight:700;
+      color:var(--text);
+    }
+    .num-input::placeholder{color:#6b7b95}
+    .done-btn{
+      height:52px;
+      border:none;
+      outline:none;
+      border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:#dbeafe;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .done-btn.active{
+      background:linear-gradient(180deg,#38bdf8,#2563eb);
+      color:white;
+      border-color:rgba(147,197,253,.35);
+    }
+    .delete-btn{
+      width:40px;
+      height:40px;
+      border:none;
+      border-radius:12px;
+      background:rgba(239,68,68,.12);
+      border:1px solid rgba(239,68,68,.2);
+      color:#fca5a5;
+      font-size:18px;
+      cursor:pointer;
+      justify-self:center;
+    }
+    .exercise-footer{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .fixed-cta{
+      position:fixed;
+      left:16px;
+      right:16px;
+      bottom:calc(var(--tab-h) + var(--safe-bottom) + 10px);
+      z-index:25;
+      display:flex;
+      gap:10px;
+      pointer-events:none;
+    }
+    .fixed-cta .btn{
+      flex:1;
+      min-height:56px;
+      border-radius:18px;
+      pointer-events:auto;
+    }
+    .tabbar{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:30;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      padding:10px 14px calc(10px + var(--safe-bottom));
+      background:linear-gradient(180deg, rgba(11,18,32,.15), rgba(11,18,32,.92) 18%, rgba(11,18,32,.98) 100%);
+      backdrop-filter: blur(16px);
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+    .tab-btn{
+      min-height:58px;
+      border:none;
+      border-radius:18px;
+      background:transparent;
+      color:var(--muted);
+      font-weight:800;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      cursor:pointer;
+      font-size:11px;
+    }
+    .tab-btn .ico{font-size:19px}
+    .tab-btn.active{
+      background:rgba(59,130,246,.14);
+      color:#dbeafe;
+      border:1px solid rgba(96,165,250,.2);
+    }
+    .inline-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .calendar-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .calendar-title{
+      font-size:20px;
+      font-weight:800;
+    }
+    .calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+    }
+    .weekday{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      padding:6px 0;
+    }
+    .day{
+      aspect-ratio:1/1;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.03);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:8px;
+      cursor:pointer;
+      position:relative;
+    }
+    .day.other{opacity:.35}
+    .day.today{outline:2px solid rgba(96,165,250,.45)}
+    .day.has-record::after{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--accent-2);
+      position:absolute;
+      bottom:9px;
+      left:50%;
+      transform:translateX(-50%);
+      box-shadow:0 0 0 4px rgba(59,130,246,.14);
+    }
+    .day.active{
+      background:rgba(59,130,246,.18);
+      border-color:rgba(96,165,250,.3);
+    }
+    .library-top{
+      display:flex;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .search-input,.text-input{
+      width:100%;
+      min-height:50px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      outline:none;
+      padding:0 14px;
+      font-size:16px;
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .list-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .list-item-main{
+      min-width:0;
+    }
+    .list-item-title{
+      font-size:16px;
+      font-weight:800;
+      word-break:break-word;
+    }
+    .list-item-sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .analysis-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .analysis-card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:18px;
+      padding:14px;
+    }
+    .analysis-big{
+      font-size:24px;
+      font-weight:800;
+      margin-top:8px;
+    }
+    .bar-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:4px;
+    }
+    .bar-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+    }
+    .bar-meta{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .bar-track{
+      height:12px;
+      background:rgba(255,255,255,.05);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .bar-fill{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg, #1d4ed8, #60a5fa);
+      width:0%;
+    }
+    .muted{color:var(--muted)}
+    .empty{
+      padding:18px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.1);
+      color:var(--muted);
+      text-align:center;
+    }
+    .settings-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .footer-space{height:10px}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+    .small{font-size:12px}
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.5);
+      backdrop-filter:blur(6px);
+      z-index:100;
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:18px;
+    }
+    .modal-backdrop.show{display:flex}
+    .modal{
+      width:min(680px,100%);
+      max-height:80vh;
+      overflow:auto;
+      background:linear-gradient(180deg,#13203a,#0f182a);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:24px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .modal-title{
+      font-size:20px;
+      font-weight:800;
+      margin:0 0 6px;
+    }
+    .modal-desc{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:14px;
+    }
+    .history-item{
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      margin-bottom:10px;
+    }
+    .history-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .history-title{
+      font-weight:800;
+      font-size:15px;
+    }
+    .history-sets{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.7;
+      white-space:pre-wrap;
+    }
+    .file-input{
+      display:none;
+    }
+    @media (max-width:390px){
+      .set-head,.set-row{
+        grid-template-columns:46px 1fr 1fr 82px 40px;
+        gap:6px;
+        padding:8px;
+      }
+      .num-input,.done-btn{height:48px}
+      .exercise-title{font-size:17px}
+      .hero-date{font-size:22px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <h1 class="title" id="topTitle">ホーム</h1>
+      <div class="subtitle" id="topSubtitle">今日のトレーニングをすばやく記録</div>
+    </div>
+
+    <main id="screen-home" class="screen"></main>
+    <main id="screen-calendar" class="screen hidden"></main>
+    <main id="screen-library" class="screen hidden"></main>
+    <main id="screen-analysis" class="screen hidden"></main>
+
+    <div class="fixed-cta" id="homeCta">
+      <button class="btn ghost" id="btnAddExercise">＋ 種目追加</button>
+      <button class="btn primary" id="btnSaveDone">修正完了</button>
+    </div>
+
+    <nav class="tabbar">
+      <button class="tab-btn active" data-tab="home">
+        <span class="ico">🏠</span><span>ホーム</span>
+      </button>
+      <button class="tab-btn" data-tab="calendar">
+        <span class="ico">📅</span><span>カレンダー</span>
+      </button>
+      <button class="tab-btn" data-tab="library">
+        <span class="ico">📚</span><span>ライブラリ</span>
+      </button>
+      <button class="tab-btn" data-tab="analysis">
+        <span class="ico">📈</span><span>分析</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modalBox"></div>
+  </div>
+
+  <input type="file" id="jsonFileInput" class="file-input" accept=".json,application/json" />
+
+  <script>
+    (function(){
+      "use strict";
+
+      const STORAGE_KEY = "workout_app_v1";
+      const DEFAULT_EXERCISES = [
+        "ベンチプレス",
+        "インクラインプレス",
+        "ラットプルダウン",
+        "シーテッドロー",
+        "ショルダープレス",
+        "サイドレイズ",
+        "アームカール",
+        "トライセプスプレスダウン",
+        "レッグプレス",
+        "ルーマニアンデッドリフト",
+        "スミスマシンスクワット",
+        "スタンディングカーフレイズマシン",
+        "デクラインクランチ"
+      ];
+      const BODYWEIGHT_HINTS = ["クランチ","腹筋","プランク","レッグレイズ","カーフレイズ"];
+      const state = loadState();
+
+      if (!state.library || !state.library.length) state.library = [...DEFAULT_EXERCISES];
+      if (!state.settings) state.settings = { frequent: [] };
+      if (!state.logs) state.logs = {};
+      if (!state.selectedDate) state.selectedDate = todayStr();
+      if (!state.activeTab) state.activeTab = "home";
+      if (!state.calendar) state.calendar = { year: todayDate().getFullYear(), month: todayDate().getMonth() };
+      ensureDay(state.selectedDate);
+
+      const els = {
+        topTitle: document.getElementById("topTitle"),
+        topSubtitle: document.getElementById("topSubtitle"),
+        screens: {
+          home: document.getElementById("screen-home"),
+          calendar: document.getElementById("screen-calendar"),
+          library: document.getElementById("screen-library"),
+          analysis: document.getElementById("screen-analysis")
+        },
+        homeCta: document.getElementById("homeCta"),
+        btnSaveDone: document.getElementById("btnSaveDone"),
+        btnAddExercise: document.getElementById("btnAddExercise"),
+        tabBtns: Array.from(document.querySelectorAll(".tab-btn")),
+        modalBackdrop: document.getElementById("modalBackdrop"),
+        modalBox: document.getElementById("modalBox"),
+        jsonFileInput: document.getElementById("jsonFileInput")
+      };
+
+      bindGlobalEvents();
+      renderApp();
+
+      function loadState(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(raw) return JSON.parse(raw);
+        }catch(e){}
+        return {
+          library: [...DEFAULT_EXERCISES],
+          logs: {},
+          selectedDate: todayStr(),
+          activeTab: "home",
+          calendar: { year: todayDate().getFullYear(), month: todayDate().getMonth() },
+          settings: { frequent: [] }
+        };
+      }
+
+      function saveState(){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function renderApp(){
+        saveState();
+        renderTopbar();
+        renderHome();
+        renderCalendar();
+        renderLibrary();
+        renderAnalysis();
+        renderTabState();
+      }
+
+      function renderTopbar(){
+        const map = {
+          home: ["ホーム", "今日のトレーニングをすばやく記録"],
+          calendar: ["カレンダー", "日別のトレーニング記録を確認"],
+          library: ["ライブラリ", "種目を追加・検索・管理"],
+          analysis: ["分析", "回数・ボリューム・自己ベストを確認"]
+        };
+        const [title, sub] = map[state.activeTab] || map.home;
+        els.topTitle.textContent = title;
+        els.topSubtitle.textContent = sub;
+        els.homeCta.style.display = state.activeTab === "home" ? "flex" : "none";
+      }
+
+      function renderTabState(){
+        for (const key in els.screens){
+          els.screens[key].classList.toggle("hidden", key !== state.activeTab);
+        }
+        els.tabBtns.forEach(btn=>{
+          btn.classList.toggle("active", btn.dataset.tab === state.activeTab);
+        });
+      }
+
+      function bindGlobalEvents(){
+        els.tabBtns.forEach(btn=>{
+          btn.addEventListener("click", ()=>{
+            state.activeTab = btn.dataset.tab;
+            renderApp();
+          });
+        });
+
+        els.btnSaveDone.addEventListener("click", ()=>{
+          saveState();
+          toast("保存しました");
+        });
+
+        els.btnAddExercise.addEventListener("click", ()=>{
+          openAddExerciseModal();
+        });
+
+        els.modalBackdrop.addEventListener("click", (e)=>{
+          if(e.target === els.modalBackdrop) closeModal();
+        });
+
+        els.jsonFileInput.addEventListener("change", handleImportJson);
+      }
+
+      function ensureDay(dateStr){
+        if(!state.logs[dateStr]){
+          state.logs[dateStr] = {
+            date: dateStr,
+            exercises: []
+          };
+        }
+      }
+
+      function getDay(dateStr){
+        ensureDay(dateStr);
+        return state.logs[dateStr];
+      }
+
+      function renderHome(){
+        const root = els.screens.home;
+        const date = state.selectedDate;
+        const day = getDay(date);
+        const recentDay = getMostRecentLogDateBefore(date);
+        const totalExercises = day.exercises.length;
+        const totalSets = day.exercises.reduce((s,e)=>s + e.sets.length, 0);
+
+        root.innerHTML = `
+          <section class="hero">
+            <div class="hero-row">
+              <div>
+                <div class="hero-date">${formatDateJP(date)}</div>
+                <div class="hero-mini">${weekdayJP(date)} ・ 種目 ${totalExercises}件 / セット ${totalSets}件</div>
+              </div>
+              <div class="chip primary">${isToday(date) ? "今日" : "対象日"}</div>
+            </div>
+            <div class="action-row">
+              <button class="btn primary" id="homeStartBtn">トレーニングを開始</button>
+              <button class="btn" id="homeLoadPrevBtn">前回のトレーニングを読み込む</button>
+              <button class="btn ghost" id="homeChangeDateBtn">日付を変更</button>
+            </div>
+          </section>
+
+          <div class="section-title">今日のメニュー</div>
+          <div id="exerciseList"></div>
+
+          <div class="section-title">バックアップ / 補助機能</div>
+          <section class="card">
+            <div class="settings-grid">
+              <button class="btn" id="exportJsonBtn">JSONエクスポート</button>
+              <button class="btn" id="importJsonBtn">JSONインポート</button>
+              <button class="btn danger" id="clearDayBtn">この日の記録削除</button>
+              <button class="btn danger" id="clearAllBtn">全データ削除</button>
+            </div>
+            <div class="muted small" style="margin-top:12px;">
+              localStorageに保存されます。エクスポートでバックアップしておくと安心です。
+            </div>
+            ${recentDay ? `<div class="muted small" style="margin-top:8px;">直近の記録日: ${formatDateJP(recentDay)}</div>` : ""}
+          </section>
+        `;
+
+        const list = root.querySelector("#exerciseList");
+        if (!day.exercises.length){
+          list.innerHTML = `
+            <div class="empty">
+              まだ種目がありません。<br>
+              「＋ 種目追加」または「前回のトレーニングを読み込む」から始めてください。
+            </div>
+          `;
+        } else {
+          day.exercises.forEach((exercise, index)=>{
+            list.appendChild(renderExerciseCard(exercise, index, date));
+          });
+        }
+
+        root.querySelector("#homeStartBtn").addEventListener("click", ()=>{
+          if(!day.exercises.length){
+            openAddExerciseModal();
+          }else{
+            toast("記録を続けてください");
+          }
+        });
+
+        root.querySelector("#homeLoadPrevBtn").addEventListener("click", ()=>{
+          loadPreviousWorkoutIntoSelectedDate();
+        });
+
+        root.querySelector("#homeChangeDateBtn").addEventListener("click", ()=>{
+          openDateSelectModal();
+        });
+
+        root.querySelector("#exportJsonBtn").addEventListener("click", exportJson);
+        root.querySelector("#importJsonBtn").addEventListener("click", ()=> els.jsonFileInput.click());
+        root.querySelector("#clearDayBtn").addEventListener("click", ()=>{
+          confirmDialog("この日の記録を削除しますか？", ()=>{
+            state.logs[state.selectedDate] = { date: state.selectedDate, exercises: [] };
+            saveState();
+            renderApp();
+            toast("この日の記録を削除しました");
+          });
+        });
+        root.querySelector("#clearAllBtn").addEventListener("click", ()=>{
+          confirmDialog("全データを削除しますか？この操作は戻せません。", ()=>{
+            state.logs = {};
+            state.library = [...DEFAULT_EXERCISES];
+            state.selectedDate = todayStr();
+            state.calendar = { year: todayDate().getFullYear(), month: todayDate().getMonth() };
+            ensureDay(state.selectedDate);
+            saveState();
+            renderApp();
+            toast("全データを削除しました");
+          });
+        });
+      }
+
+      function renderExerciseCard(exercise, index, dateStr){
+        const card = document.createElement("section");
+        card.className = "exercise-card card";
+        const summary = calcExerciseSummary(exercise);
+        const prev = findPreviousExerciseLog(dateStr, exercise.name);
+        const prevSummary = prev ? calcExerciseSummary(prev.exercise) : null;
+        const deltaHtml = buildDeltaHtml(summary, prevSummary);
+        const recentText = prev ? `${formatDateJP(prev.date)} / ${formatSetSummary(prev.exercise.sets)}` : "前回記録なし";
+
+        card.innerHTML = `
+          <div class="exercise-header">
+            <div style="display:flex; gap:10px; min-width:0;">
+              <div class="exercise-no">${index + 1}</div>
+              <div style="min-width:0;">
+                <h3 class="exercise-title">${escapeHtml(exercise.name)}</h3>
+                <div class="exercise-sub">種目番号 ${index + 1} ・ セット ${exercise.sets.length}件</div>
+              </div>
+            </div>
+            <div class="exercise-top-actions">
+              <button class="btn small ghost recent-btn">最近の記録</button>
+              <button class="btn small danger delete-exercise-btn">削除</button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-label">${summary.hasWeight ? "総ボリューム" : "総回数"}</div>
+              <div class="stat-value">${summary.hasWeight ? `${formatNumber(summary.volume)} kg` : `${summary.reps} 回`}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">前回差分</div>
+              <div class="stat-value">${deltaHtml}</div>
+            </div>
+          </div>
+
+          <textarea class="memo-area" placeholder="メモ（フォーム、RIR、感覚など）">${escapeHtml(exercise.memo || "")}</textarea>
+
+          <div class="sets-wrap">
+            <div class="set-head">
+              <div>Set</div>
+              <div>kg</div>
+              <div>回</div>
+              <div>完了</div>
+              <div></div>
+            </div>
+            <div class="sets-container"></div>
+          </div>
+
+          <div class="exercise-footer">
+            <button class="btn small primary add-set-btn">＋ セット追加</button>
+            <button class="btn small ghost copy-prev-sets-btn">前回セット反映</button>
+            <button class="btn small ghost duplicate-exercise-btn">種目複製</button>
+          </div>
+          <div class="muted small" style="margin-top:10px;">最近: ${escapeHtml(recentText)}</div>
+        `;
+
+        const setsContainer = card.querySelector(".sets-container");
+        if (!exercise.sets.length){
+          exercise.sets.push(createDefaultSet(exercise.name));
+        }
+        exercise.sets.forEach((set, setIndex)=>{
+          setsContainer.appendChild(renderSetRow(exercise, set, setIndex, dateStr));
+        });
+
+        const memoArea = card.querySelector(".memo-area");
+        memoArea.addEventListener("input", ()=>{
+          exercise.memo = memoArea.value;
+          saveState();
+          renderHomePartial();
+        });
+
+        card.querySelector(".add-set-btn").addEventListener("click", ()=>{
+          const last = exercise.sets[exercise.sets.length - 1];
+          exercise.sets.push({
+            kg: last && last.kg !== "" ? last.kg : "",
+            reps: last && last.reps !== "" ? last.reps : "",
+            done: false
+          });
+          saveState();
+          renderHomePartial();
+        });
+
+        card.querySelector(".copy-prev-sets-btn").addEventListener("click", ()=>{
+          const prevItem = findPreviousExerciseLog(dateStr, exercise.name);
+          if(!prevItem){
+            toast("前回記録がありません");
+            return;
+          }
+          confirmDialog("前回のセット内容をこの種目に反映しますか？", ()=>{
+            exercise.sets = prevItem.exercise.sets.map(s=>({
+              kg: s.kg ?? "",
+              reps: s.reps ?? "",
+              done: false
+            }));
+            saveState();
+            renderApp();
+            toast("前回のセットを反映しました");
+          });
+        });
+
+        card.querySelector(".duplicate-exercise-btn").addEventListener("click", ()=>{
+          const day = getDay(dateStr);
+          day.exercises.splice(index + 1, 0, deepClone(exercise));
+          saveState();
+          renderApp();
+          toast("種目を複製しました");
+        });
+
+        card.querySelector(".delete-exercise-btn").addEventListener("click", ()=>{
+          confirmDialog(`「${exercise.name}」を削除しますか？`, ()=>{
+            const day = getDay(dateStr);
+            day.exercises.splice(index, 1);
+            saveState();
+            renderApp();
+            toast("種目を削除しました");
+          });
+        });
+
+        card.querySelector(".recent-btn").addEventListener("click", ()=>{
+          openRecentRecordModal(exercise.name, dateStr);
+        });
+
+        return card;
+      }
+
+      function renderSetRow(exercise, set, setIndex){
+        const row = document.createElement("div");
+        row.className = "set-row" + (set.done ? " done" : "");
+        row.innerHTML = `
+          <div class="set-index">${setIndex + 1}</div>
+          <input class="num-input kg-input" inputmode="decimal" placeholder="${guessBodyweight(exercise.name) ? "自重" : "0"}" value="${escapeAttr(set.kg ?? "")}">
+          <input class="num-input reps-input" inputmode="numeric" placeholder="0" value="${escapeAttr(set.reps ?? "")}">
+          <button class="done-btn ${set.done ? "active" : ""}">${set.done ? "完了" : "未完"}</button>
+          <button class="delete-btn">×</button>
+        `;
+
+        const kgInput = row.querySelector(".kg-input");
+        const repsInput = row.querySelector(".reps-input");
+        const doneBtn = row.querySelector(".done-btn");
+        const deleteBtn = row.querySelector(".delete-btn");
+
+        kgInput.addEventListener("input", ()=>{
+          set.kg = normalizeNumberInput(kgInput.value);
+          saveState();
+          renderHomePartial();
+        });
+        repsInput.addEventListener("input", ()=>{
+          set.reps = normalizeNumberInput(repsInput.value, true);
+          saveState();
+          renderHomePartial();
+        });
+        doneBtn.addEventListener("click", ()=>{
+          set.done = !set.done;
+          saveState();
+          renderHomePartial();
+        });
+        deleteBtn.addEventListener("click", ()=>{
+          if(exercise.sets.length === 1){
+            toast("最低1セットは残してください");
+            return;
+          }
+          exercise.sets.splice(setIndex, 1);
+          saveState();
+          renderHomePartial();
+        });
+
+        return row;
+      }
+
+      function renderHomePartial(){
+        renderHome();
+      }
+
+      function renderCalendar(){
+        const root = els.screens.calendar;
+        const { year, month } = state.calendar;
+        const first = new Date(year, month, 1);
+        const startDay = first.getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const prevMonthDays = new Date(year, month, 0).getDate();
+        const days = [];
+
+        for(let i=0;i<startDay;i++){
+          days.push({ day: prevMonthDays - startDay + i + 1, other:true, date: formatDate(new Date(year, month - 1, prevMonthDays - startDay + i + 1)) });
+        }
+        for(let d=1; d<=daysInMonth; d++){
+          days.push({ day:d, other:false, date: formatDate(new Date(year, month, d)) });
+        }
+        while(days.length % 7 !== 0){
+          const nextDay = days.length - (startDay + daysInMonth) + 1;
+          days.push({ day: nextDay, other:true, date: formatDate(new Date(year, month + 1, nextDay)) });
+        }
+
+        root.innerHTML = `
+          <section class="card">
+            <div class="calendar-header">
+              <button class="btn small ghost" id="calPrevBtn">← 前月</button>
+              <div class="calendar-title">${year}年 ${month + 1}月</div>
+              <button class="btn small ghost" id="calNextBtn">次月 →</button>
+            </div>
+            <div class="calendar-grid" style="margin-bottom:8px;">
+              ${["日","月","火","水","木","金","土"].map(w=>`<div class="weekday">${w}</div>`).join("")}
+            </div>
+            <div class="calendar-grid" id="calendarDays"></div>
+          </section>
+
+          <div class="section-title">選択日の記録</div>
+          <div id="calendarDetail"></div>
+        `;
+
+        const grid = root.querySelector("#calendarDays");
+        days.forEach(item=>{
+          const hasRecord = !!(state.logs[item.date] && state.logs[item.date].exercises && state.logs[item.date].exercises.length);
+          const div = document.createElement("button");
+          div.className = "day" +
+            (item.other ? " other" : "") +
+            (item.date === todayStr() ? " today" : "") +
+            (hasRecord ? " has-record" : "") +
+            (item.date === state.selectedDate ? " active" : "");
+          div.innerHTML = `<div>${item.day}</div><div class="small muted">${hasRecord ? "記録あり" : ""}</div>`;
+          div.addEventListener("click", ()=>{
+            state.selectedDate = item.date;
+            ensureDay(item.date);
+            saveState();
+            renderApp();
+          });
+          grid.appendChild(div);
+        });
+
+        root.querySelector("#calPrevBtn").addEventListener("click", ()=>{
+          if(state.calendar.month === 0){
+            state.calendar.month = 11;
+            state.calendar.year--;
+          }else{
+            state.calendar.month--;
+          }
+          renderCalendar();
+        });
+        root.querySelector("#calNextBtn").addEventListener("click", ()=>{
+          if(state.calendar.month === 11){
+            state.calendar.month = 0;
+            state.calendar.year++;
+          }else{
+            state.calendar.month++;
+          }
+          renderCalendar();
+        });
+
+        const detail = root.querySelector("#calendarDetail");
+        const day = getDay(state.selectedDate);
+        if (!day.exercises.length){
+          detail.innerHTML = `<div class="empty">${formatDateJP(state.selectedDate)} の記録はありません。</div>`;
+        } else {
+          detail.innerHTML = `
+            <section class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div>
+                  <div style="font-size:18px;font-weight:800;">${formatDateJP(state.selectedDate)}</div>
+                  <div class="muted small">${day.exercises.length}種目</div>
+                </div>
+                <button class="btn small primary" id="openDayOnHomeBtn">ホームで開く</button>
+              </div>
+              <div class="list" style="margin-top:12px;">
+                ${day.exercises.map((ex, i)=>{
+                  const s = calcExerciseSummary(ex);
+                  return `
+                    <div class="list-item">
+                      <div class="list-item-main">
+                        <div class="list-item-title">${i+1}. ${escapeHtml(ex.name)}</div>
+                        <div class="list-item-sub">${s.hasWeight ? `総ボリューム ${formatNumber(s.volume)} kg` : `総回数 ${s.reps} 回`} / セット ${ex.sets.length}</div>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </section>
+          `;
+          detail.querySelector("#openDayOnHomeBtn").addEventListener("click", ()=>{
+            state.activeTab = "home";
+            renderApp();
+          });
+        }
+      }
+
+      function renderLibrary(){
+        const root = els.screens.library;
+        const keyword = state.libraryKeyword || "";
+        const frequent = getFrequentExercises();
+        const filtered = state.library.filter(name => name.toLowerCase().includes(keyword.toLowerCase()));
+
+        root.innerHTML = `
+          <div class="library-top">
+            <input id="librarySearch" class="search-input" placeholder="種目を検索" value="${escapeAttr(keyword)}">
+          </div>
+
+          <section class="card">
+            <div class="inline-grid">
+              <input id="newExerciseInput" class="text-input" placeholder="新しい種目名を入力">
+              <button class="btn primary" id="addLibraryBtn">種目追加</button>
+            </div>
+          </section>
+
+          <div class="section-title">よく使う種目</div>
+          <section class="card">
+            <div class="list">
+              ${
+                frequent.length
+                  ? frequent.map(item => `
+                    <div class="list-item">
+                      <div class="list-item-main">
+                        <div class="list-item-title">${escapeHtml(item.name)}</div>
+                        <div class="list-item-sub">使用回数 ${item.count}回</div>
+                      </div>
+                      <button class="btn small primary addToTodayBtn" data-name="${escapeAttr(item.name)}">今日に追加</button>
+                    </div>
+                  `).join("")
+                  : `<div class="empty">まだ使用履歴がありません。</div>`
+              }
+            </div>
+          </section>
+
+          <div class="section-title">登録済み種目一覧</div>
+          <section class="card">
+            <div class="list">
+              ${
+                filtered.length
+                ? filtered.map(name => `
+                  <div class="list-item">
+                    <div class="list-item-main">
+                      <div class="list-item-title">${escapeHtml(name)}</div>
+                      <div class="list-item-sub">${guessBodyweight(name) ? "自重系候補" : "重量入力対応"}</div>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                      <button class="btn small primary addToTodayBtn" data-name="${escapeAttr(name)}">追加</button>
+                      <button class="btn small danger deleteLibBtn" data-name="${escapeAttr(name)}">削除</button>
+                    </div>
+                  </div>
+                `).join("")
+                : `<div class="empty">該当する種目がありません。</div>`
+              }
+            </div>
+          </section>
+        `;
+
+        root.querySelector("#librarySearch").addEventListener("input", (e)=>{
+          state.libraryKeyword = e.target.value;
+          renderLibrary();
+        });
+
+        root.querySelector("#addLibraryBtn").addEventListener("click", ()=>{
+          const input = root.querySelector("#newExerciseInput");
+          const name = (input.value || "").trim();
+          if(!name) return toast("種目名を入力してください");
+          if(state.library.includes(name)) return toast("すでに登録済みです");
+          state.library.unshift(name);
+          saveState();
+          input.value = "";
+          renderApp();
+          toast("種目を追加しました");
+        });
+
+        root.querySelectorAll(".addToTodayBtn").forEach(btn=>{
+          btn.addEventListener("click", ()=>{
+            addExerciseToDay(btn.dataset.name, state.selectedDate);
+          });
+        });
+
+        root.querySelectorAll(".deleteLibBtn").forEach(btn=>{
+          btn.addEventListener("click", ()=>{
+            const name = btn.dataset.name;
+            confirmDialog(`「${name}」をライブラリから削除しますか？`, ()=>{
+              state.library = state.library.filter(v => v !== name);
+              saveState();
+              renderApp();
+              toast("削除しました");
+            });
+          });
+        });
+      }
+
+      function renderAnalysis(){
+        const root = els.screens.analysis;
+        const stats = buildStats();
+        const topVolumes = Object.entries(stats.exerciseVolumeTotals).sort((a,b)=>b[1]-a[1]).slice(0,8);
+        const latestRecords = Object.entries(stats.latestRecordByExercise).sort((a,b)=>a[0].localeCompare(b[0], "ja")).slice(0,12);
+        const bestRecords = Object.entries(stats.bestVolumeByExercise).sort((a,b)=>b[1].value-a[1].value).slice(0,8);
+
+        root.innerHTML = `
+          <section class="analysis-grid">
+            <div class="analysis-card">
+              <div class="muted small">今月のトレーニング回数</div>
+              <div class="analysis-big">${stats.currentMonthWorkoutCount}</div>
+            </div>
+            <div class="analysis-card">
+              <div class="muted small">累計トレーニング日数</div>
+              <div class="analysis-big">${stats.totalWorkoutDays}</div>
+            </div>
+          </section>
+
+          <div class="section-title">月間トレーニング回数グラフ</div>
+          <section class="card">
+            <div class="bar-list">
+              ${
+                stats.monthCounts.length
+                  ? stats.monthCounts.map(item=>{
+                    const max = Math.max(...stats.monthCounts.map(v=>v.count),1);
+                    const width = (item.count / max) * 100;
+                    return `
+                      <div class="bar-row">
+                        <div>
+                          <div class="bar-meta">${item.label}</div>
+                          <div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div>
+                        </div>
+                        <div class="mono">${item.count}</div>
+                      </div>
+                    `;
+                  }).join("")
+                  : `<div class="empty">まだ分析できる記録がありません。</div>`
+              }
+            </div>
+          </section>
+
+          <div class="section-title">種目別 累計ボリューム</div>
+          <section class="card">
+            ${
+              topVolumes.length
+                ? `<div class="bar-list">
+                    ${topVolumes.map(([name, value])=>{
+                      const max = Math.max(...topVolumes.map(v=>v[1]),1);
+                      const width = (value / max) * 100;
+                      return `
+                        <div class="bar-row">
+                          <div>
+                            <div class="bar-meta">${escapeHtml(name)}</div>
+                            <div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div>
+                          </div>
+                          <div class="mono">${formatNumber(value)}</div>
+                        </div>
+                      `;
+                    }).join("")}
+                  </div>`
+                : `<div class="empty">まだボリュームデータがありません。</div>`
+            }
+          </section>
+
+          <div class="section-title">種目別 最新記録</div>
+          <section class="card">
+            ${
+              latestRecords.length
+                ? `<div class="list">
+                    ${latestRecords.map(([name, item])=>`
+                      <div class="list-item">
+                        <div class="list-item-main">
+                          <div class="list-item-title">${escapeHtml(name)}</div>
+                          <div class="list-item-sub">${formatDateJP(item.date)}</div>
+                        </div>
+                        <div class="mono">${item.hasWeight ? `${formatNumber(item.value)}kg` : `${item.value}回`}</div>
+                      </div>
+                    `).join("")}
+                  </div>`
+                : `<div class="empty">まだ最新記録がありません。</div>`
+            }
+          </section>
+
+          <div class="section-title">種目別 最高ボリューム</div>
+          <section class="card">
+            ${
+              bestRecords.length
+                ? `<div class="list">
+                    ${bestRecords.map(([name, item])=>`
+                      <div class="list-item">
+                        <div class="list-item-main">
+                          <div class="list-item-title">${escapeHtml(name)}</div>
+                          <div class="list-item-sub">${formatDateJP(item.date)}</div>
+                        </div>
+                        <div class="mono">${item.hasWeight ? `${formatNumber(item.value)}kg` : `${item.value}回`}</div>
+                      </div>
+                    `).join("")}
+                  </div>`
+                : `<div class="empty">まだ最高記録がありません。</div>`
+            }
+          </section>
+        `;
+      }
+
+      function buildStats(){
+        const logs = Object.values(state.logs).filter(d => d.exercises && d.exercises.length);
+        const totalWorkoutDays = logs.length;
+
+        const now = parseDate(state.selectedDate || todayStr());
+        const ym = `${now.getFullYear()}-${pad(now.getMonth()+1)}`;
+        let currentMonthWorkoutCount = 0;
+
+        const exerciseVolumeTotals = {};
+        const latestRecordByExercise = {};
+        const bestVolumeByExercise = {};
+        const monthMap = {};
+
+        logs.sort((a,b)=>a.date.localeCompare(b.date));
+
+        logs.forEach(day=>{
+          const monthLabel = day.date.slice(0,7);
+          monthMap[monthLabel] = (monthMap[monthLabel] || 0) + 1;
+          if(monthLabel === ym) currentMonthWorkoutCount++;
+
+          day.exercises.forEach(ex=>{
+            const s = calcExerciseSummary(ex);
+            const value = s.hasWeight ? s.volume : s.reps;
+
+            exerciseVolumeTotals[ex.name] = (exerciseVolumeTotals[ex.name] || 0) + value;
+
+            latestRecordByExercise[ex.name] = {
+              date: day.date,
+              value,
+              hasWeight: s.hasWeight
+            };
+
+            if(!bestVolumeByExercise[ex.name] || value > bestVolumeByExercise[ex.name].value){
+              bestVolumeByExercise[ex.name] = {
+                date: day.date,
+                value,
+                hasWeight: s.hasWeight
+              };
+            }
+          });
+        });
+
+        const monthCounts = Object.entries(monthMap).slice(-6).map(([label, count])=>({
+          label,
+          count
+        }));
+
+        return {
+          totalWorkoutDays,
+          currentMonthWorkoutCount,
+          exerciseVolumeTotals,
+          latestRecordByExercise,
+          bestVolumeByExercise,
+          monthCounts
+        };
+      }
+
+      function addExerciseToDay(name, dateStr){
+        const day = getDay(dateStr);
+        day.exercises.push({
+          id: uid(),
+          name,
+          memo: "",
+          sets: [createDefaultSet(name)]
+        });
+        saveState();
+        renderApp();
+        toast("種目を追加しました");
+      }
+
+      function createDefaultSet(name){
+        return {
+          kg: guessBodyweight(name) ? "" : "",
+          reps: "",
+          done: false
+        };
+      }
+
+      function guessBodyweight(name){
+        return BODYWEIGHT_HINTS.some(h=>name.includes(h));
+      }
+
+      function calcExerciseSummary(exercise){
+        let volume = 0;
+        let reps = 0;
+        let hasWeight = false;
+
+        exercise.sets.forEach(set=>{
+          const kg = parseFloat(set.kg);
+          const r = parseInt(set.reps,10);
+          const validReps = Number.isFinite(r) ? r : 0;
+          const validKg = Number.isFinite(kg) ? kg : 0;
+          reps += validReps;
+          if(validKg > 0) hasWeight = true;
+          volume += validKg * validReps;
+        });
+
+        return { volume, reps, hasWeight };
+      }
+
+      function buildDeltaHtml(current, prev){
+        if(!prev){
+          return `<span class="delta neutral">—</span>`;
+        }
+        const currentValue = current.hasWeight ? current.volume : current.reps;
+        const prevValue = prev.hasWeight ? prev.volume : prev.reps;
+        const diff = currentValue - prevValue;
+        if(diff > 0){
+          return `<span class="delta positive">+${formatNumber(diff)}</span>`;
+        }
+        if(diff < 0){
+          return `<span class="delta negative">${formatNumber(diff)}</span>`;
+        }
+        return `<span class="delta neutral">±0</span>`;
+      }
+
+      function getMostRecentLogDateBefore(dateStr){
+        const dates = Object.keys(state.logs)
+          .filter(d => d < dateStr && state.logs[d].exercises && state.logs[d].exercises.length)
+          .sort()
+        return dates.length ? dates[dates.length - 1] : null;
+      }
+
+      function findPreviousExerciseLog(dateStr, exerciseName){
+        const dates = Object.keys(state.logs).filter(d => d < dateStr).sort().reverse();
+        for(const d of dates){
+          const day = state.logs[d];
+          const hit = day.exercises.find(ex => ex.name === exerciseName);
+          if(hit){
+            return { date: d, exercise: hit };
+          }
+        }
+        return null;
+      }
+
+      function loadPreviousWorkoutIntoSelectedDate(){
+        const prevDate = getMostRecentLogDateBefore(state.selectedDate);
+        if(!prevDate){
+          toast("前回の記録がありません");
+          return;
+        }
+        confirmDialog(`${formatDateJP(prevDate)} のトレーニングを読み込みますか？`, ()=>{
+          const prev = getDay(prevDate);
+          const day = getDay(state.selectedDate);
+          day.exercises = prev.exercises.map(ex => ({
+            id: uid(),
+            name: ex.name,
+            memo: ex.memo || "",
+            sets: ex.sets.map(s => ({
+              kg: s.kg ?? "",
+              reps: s.reps ?? "",
+              done: false
+            }))
+          }));
+          saveState();
+          renderApp();
+          toast("前回トレーニングを読み込みました");
+        });
+      }
+
+      function openAddExerciseModal(){
+        const day = getDay(state.selectedDate);
+        const keyword = state.modalExerciseKeyword || "";
+        const list = state.library
+          .filter(name => name.toLowerCase().includes(keyword.toLowerCase()))
+          .slice(0, 100);
+
+        openModal(`
+          <h2 class="modal-title">種目を追加</h2>
+          <div class="modal-desc">ライブラリから選ぶか、新規種目を追加できます。</div>
+          <input id="modalExerciseSearch" class="search-input" placeholder="種目を検索" value="${escapeAttr(keyword)}">
+          <div class="inline-grid" style="margin-top:10px;">
+            <input id="modalNewExercise" class="text-input" placeholder="新しい種目名">
+            <button class="btn primary" id="modalAddNewExerciseBtn">新規追加</button>
+          </div>
+          <div class="section-title">候補</div>
+          <div class="list" id="modalExerciseList">
+            ${
+              list.length
+                ? list.map(name => `
+                  <div class="list-item">
+                    <div class="list-item-main">
+                      <div class="list-item-title">${escapeHtml(name)}</div>
+                      <div class="list-item-sub">今日のメニューに追加</div>
+                    </div>
+                    <button class="btn small primary modalSelectExerciseBtn" data-name="${escapeAttr(name)}">追加</button>
+                  </div>
+                `).join("")
+                : `<div class="empty">該当する種目がありません。</div>`
+            }
+          </div>
+          ${
+            day.exercises.length
+              ? `<div class="section-title">現在のメニュー</div>
+                 <div class="muted small">${day.exercises.map((e,i)=>`${i+1}. ${e.name}`).join(" / ")}</div>`
+              : ""
+          }
+        `);
+
+        document.getElementById("modalExerciseSearch").addEventListener("input", (e)=>{
+          state.modalExerciseKeyword = e.target.value;
+          openAddExerciseModal();
+        });
+
+        document.getElementById("modalAddNewExerciseBtn").addEventListener("click", ()=>{
+          const input = document.getElementById("modalNewExercise");
+          const name = (input.value || "").trim();
+          if(!name) return toast("種目名を入力してください");
+          if(!state.library.includes(name)) state.library.unshift(name);
+          addExerciseToDay(name, state.selectedDate);
+          closeModal();
+        });
+
+        document.querySelectorAll(".modalSelectExerciseBtn").forEach(btn=>{
+          btn.addEventListener("click", ()=>{
+            addExerciseToDay(btn.dataset.name, state.selectedDate);
+            closeModal();
+          });
+        });
+      }
+
+      function openRecentRecordModal(exerciseName, beforeDate){
+        const items = Object.keys(state.logs)
+          .filter(date => date <= beforeDate)
+          .sort()
+          .reverse()
+          .map(date => {
+            const ex = state.logs[date].exercises.find(v=>v.name === exerciseName);
+            if(!ex) return null;
+            const s = calcExerciseSummary(ex);
+            return { date, ex, summary:s };
+          })
+          .filter(Boolean)
+          .slice(0, 8);
+
+        openModal(`
+          <h2 class="modal-title">${escapeHtml(exerciseName)} の最近の記録</h2>
+          <div class="modal-desc">直近の記録を確認しながら、現在のセットを組み立てられます。</div>
+          ${
+            items.length
+              ? items.map(item => `
+                <div class="history-item">
+                  <div class="history-head">
+                    <div class="history-title">${formatDateJP(item.date)}</div>
+                    <div class="mono small">${item.summary.hasWeight ? `${formatNumber(item.summary.volume)}kg` : `${item.summary.reps}回`}</div>
+                  </div>
+                  <div class="history-sets">${escapeHtml(formatSetSummary(item.ex.sets, true))}</div>
+                </div>
+              `).join("")
+              : `<div class="empty">記録がありません。</div>`
+          }
+        `);
+      }
+
+      function openDateSelectModal(){
+        openModal(`
+          <h2 class="modal-title">対象日を変更</h2>
+          <div class="modal-desc">記録したい日を選択してください。</div>
+          <input id="selectDateInput" class="text-input" type="date" value="${state.selectedDate}">
+          <div class="action-row" style="margin-top:12px;">
+            <button class="btn primary" id="selectDateOkBtn">この日を開く</button>
+            <button class="btn ghost" id="selectDateTodayBtn">今日に戻す</button>
+          </div>
+        `);
+        document.getElementById("selectDateOkBtn").addEventListener("click", ()=>{
+          const v = document.getElementById("selectDateInput").value;
+          if(!v) return toast("日付を選択してください");
+          state.selectedDate = v;
+          const d = parseDate(v);
+          state.calendar.year = d.getFullYear();
+          state.calendar.month = d.getMonth();
+          ensureDay(v);
+          saveState();
+          closeModal();
+          renderApp();
+        });
+        document.getElementById("selectDateTodayBtn").addEventListener("click", ()=>{
+          state.selectedDate = todayStr();
+          const d = todayDate();
+          state.calendar.year = d.getFullYear();
+          state.calendar.month = d.getMonth();
+          ensureDay(state.selectedDate);
+          saveState();
+          closeModal();
+          renderApp();
+        });
+      }
+
+      function confirmDialog(message, onOk){
+        openModal(`
+          <h2 class="modal-title">確認</h2>
+          <div class="modal-desc">${escapeHtml(message)}</div>
+          <div class="action-row">
+            <button class="btn danger" id="confirmOkBtn">実行する</button>
+            <button class="btn ghost" id="confirmCancelBtn">キャンセル</button>
+          </div>
+        `);
+        document.getElementById("confirmOkBtn").addEventListener("click", ()=>{
+          closeModal();
+          onOk();
+        });
+        document.getElementById("confirmCancelBtn").addEventListener("click", closeModal);
+      }
+
+      function exportJson(){
+        const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `workout-backup-${todayStr()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast("JSONを書き出しました");
+      }
+
+      function handleImportJson(e){
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(){
+          try{
+            const data = JSON.parse(reader.result);
+            if(!data || typeof data !== "object") throw new Error("invalid");
+            confirmDialog("JSONを読み込みますか？現在のデータは上書きされます。", ()=>{
+              const merged = {
+                library: Array.isArray(data.library) ? data.library : [...DEFAULT_EXERCISES],
+                logs: data.logs && typeof data.logs === "object" ? data.logs : {},
+                selectedDate: data.selectedDate || todayStr(),
+                activeTab: data.activeTab || "home",
+                calendar: data.calendar || { year: todayDate().getFullYear(), month: todayDate().getMonth() },
+                settings: data.settings || { frequent: [] }
+              };
+              Object.keys(state).forEach(k=>delete state[k]);
+              Object.assign(state, merged);
+              ensureDay(state.selectedDate);
+              saveState();
+              renderApp();
+              toast("JSONを読み込みました");
+            });
+          }catch(err){
+            toast("JSONの読み込みに失敗しました");
+          } finally {
+            e.target.value = "";
+          }
+        };
+        reader.readAsText(file, "utf-8");
+      }
+
+      function getFrequentExercises(){
+        const countMap = {};
+        Object.values(state.logs).forEach(day=>{
+          (day.exercises || []).forEach(ex=>{
+            countMap[ex.name] = (countMap[ex.name] || 0) + 1;
+          });
+        });
+        return Object.entries(countMap)
+          .map(([name,count])=>({name,count}))
+          .sort((a,b)=>b.count-a.count)
+          .slice(0,6);
+      }
+
+      function openModal(html){
+        els.modalBox.innerHTML = html;
+        els.modalBackdrop.classList.add("show");
+      }
+
+      function closeModal(){
+        els.modalBackdrop.classList.remove("show");
+        els.modalBox.innerHTML = "";
+      }
+
+      function toast(message){
+        const existing = document.getElementById("toastMessage");
+        if(existing) existing.remove();
+        const div = document.createElement("div");
+        div.id = "toastMessage";
+        div.textContent = message;
+        div.style.position = "fixed";
+        div.style.left = "50%";
+        div.style.bottom = `calc(${getComputedStyle(document.documentElement).getPropertyValue('--tab-h')} + var(--safe-bottom) + 90px)`;
+        div.style.transform = "translateX(-50%)";
+        div.style.zIndex = "999";
+        div.style.padding = "12px 16px";
+        div.style.borderRadius = "14px";
+        div.style.background = "rgba(15,23,42,.96)";
+        div.style.border = "1px solid rgba(255,255,255,.08)";
+        div.style.color = "#fff";
+        div.style.fontWeight = "800";
+        div.style.fontSize = "14px";
+        div.style.boxShadow = "0 10px 24px rgba(0,0,0,.35)";
+        document.body.appendChild(div);
+        setTimeout(()=>{ div.style.opacity = "0"; div.style.transition = "opacity .25s"; }, 1400);
+        setTimeout(()=>div.remove(), 1750);
+      }
+
+      function formatSetSummary(sets, multiLine){
+        return sets.map((s, i)=>{
+          const kg = s.kg !== "" && s.kg != null ? `${s.kg}kg` : "自重";
+          const reps = s.reps !== "" && s.reps != null ? `${s.reps}回` : "回数未入力";
+          const done = s.done ? "✓" : "";
+          return `${i+1}set: ${kg} × ${reps} ${done}`.trim();
+        }).join(multiLine ? "\n" : " / ");
+      }
+
+      function normalizeNumberInput(v, integerOnly){
+        if(v === "") return "";
+        let cleaned = String(v).replace(/[^\d.]/g, "");
+        if(integerOnly) cleaned = cleaned.replace(/\./g, "");
+        const parts = cleaned.split(".");
+        if(parts.length > 2){
+          cleaned = parts[0] + "." + parts.slice(1).join("");
+        }
+        return cleaned;
+      }
+
+      function uid(){
+        return Math.random().toString(36).slice(2,10);
+      }
+
+      function deepClone(obj){
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function todayDate(){
+        const d = new Date();
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      }
+
+      function todayStr(){
+        return formatDate(todayDate());
+      }
+
+      function formatDate(date){
+        return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+      }
+
+      function formatDateJP(str){
+        const d = parseDate(str);
+        return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+      }
+
+      function weekdayJP(str){
+        return ["日","月","火","水","木","金","土"][parseDate(str).getDay()] + "曜日";
+      }
+
+      function parseDate(str){
+        const [y,m,d] = str.split("-").map(Number);
+        return new Date(y, m - 1, d);
+      }
+
+      function isToday(dateStr){
+        return dateStr === todayStr();
+      }
+
+      function pad(n){
+        return String(n).padStart(2,"0");
+      }
+
+      function formatNumber(n){
+        const num = Number(n) || 0;
+        return Number.isInteger(num) ? String(num) : num.toFixed(1);
+      }
+
+      function escapeHtml(v){
+        return String(v ?? "")
+          .replace(/&/g,"&amp;")
+          .replace(/</g,"&lt;")
+          .replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;")
+          .replace(/'/g,"&#039;");
+      }
+
+      function escapeAttr(v){
+        return escapeHtml(v);
+      }
+    })();
+  </script>
+</body>
+</html>
