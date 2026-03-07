@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0e1624" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b1220" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="筋トレ記録" />
@@ -11,2223 +11,1888 @@
   <style>
     :root{
       --bg:#0b1220;
-      --bg-2:#0f1728;
-      --card:#131d31;
-      --card-2:#17233a;
+      --bg-soft:#10192d;
+      --panel:#131f36;
+      --panel-2:#162440;
+      --card:#111a2d;
       --line:rgba(255,255,255,.08);
-      --line-2:rgba(255,255,255,.12);
-      --text:#edf3ff;
-      --muted:#8ea0bf;
+      --line-strong:rgba(255,255,255,.13);
+      --text:#e9f1ff;
+      --muted:#93a6c7;
       --blue:#3b82f6;
       --blue-2:#60a5fa;
-      --red:#ef4444;
       --green:#22c55e;
-      --amber:#f59e0b;
-      --shadow:0 10px 28px rgba(0,0,0,.28);
+      --red:#ef4444;
+      --yellow:#f59e0b;
+      --shadow:0 10px 30px rgba(0,0,0,.28);
       --radius:18px;
       --radius-sm:12px;
-      --safe-top:env(safe-area-inset-top,0px);
-      --safe-bottom:env(safe-area-inset-bottom,0px);
-      --tab-h:76px;
-      --action-h:78px;
-      --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      --safe-top:env(safe-area-inset-top);
+      --safe-bottom:env(safe-area-inset-bottom);
+      --tab-h:74px;
+      --timer-h:72px;
+      --header-h:60px;
+      --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
     }
 
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--font);
-      background:
-        radial-gradient(circle at top, rgba(59,130,246,.14), transparent 28%),
-        linear-gradient(180deg, #0a1220 0%, #0b1220 36%, #0a101b 100%);
-      color:var(--text);
-      overflow:hidden;
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:var(--font)}
+    body{overflow:hidden}
+    input,button,textarea,select{font:inherit}
+    button{cursor:pointer;border:none;background:none;color:inherit}
+    input,textarea,select{
+      background:#0d1628;color:var(--text);border:1px solid var(--line);outline:none;
+      border-radius:14px;padding:12px 14px;
     }
-
-    button,input,select,textarea{
-      font:inherit;
-      color:inherit;
-    }
-
-    input,select,textarea{
-      background:#0d1627;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 12px;
-      outline:none;
-      width:100%;
-    }
-    input:focus,select:focus,textarea:focus{
-      border-color:rgba(96,165,250,.65);
-      box-shadow:0 0 0 3px rgba(59,130,246,.16);
-    }
-    input[type="checkbox"]{
-      width:22px;height:22px;
-      accent-color:var(--blue);
-      border-radius:6px;
-      padding:0;
-    }
-
+    input::placeholder,textarea::placeholder{color:#6f85ad}
     .app{
       height:100%;
       display:flex;
       flex-direction:column;
-    }
-
-    .screen-wrap{
-      flex:1;
-      overflow:hidden;
-      position:relative;
-    }
-
-    .screen{
-      position:absolute;
-      inset:0;
-      overflow:auto;
-      padding:
-        calc(12px + var(--safe-top))
-        14px
-        calc(var(--tab-h) + var(--action-h) + 18px + var(--safe-bottom))
-        14px;
-      display:none;
-    }
-    .screen.active{display:block}
-
-    .header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:12px;
-    }
-    .title-block h1,.title-block h2{
-      margin:0;
-      letter-spacing:.01em;
-      font-weight:800;
-    }
-    .title-block h1{font-size:24px}
-    .title-block h2{font-size:20px}
-    .sub{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:4px;
-    }
-
-    .icon-btn,.chip,.btn,.seg button,.tab{
-      appearance:none;
-      border:none;
-      cursor:pointer;
-    }
-
-    .icon-btn{
-      width:40px;height:40px;
-      border-radius:14px;
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      display:grid;place-items:center;
-      border:1px solid var(--line);
-      flex:0 0 auto;
-    }
-
-    .btn{
-      background:var(--blue);
-      color:white;
-      border-radius:14px;
-      padding:11px 14px;
-      font-weight:700;
-      box-shadow:0 8px 18px rgba(59,130,246,.28);
-    }
-    .btn.ghost{
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      border:1px solid var(--line);
-      box-shadow:none;
-    }
-    .btn.muted{
-      background:rgba(96,165,250,.12);
-      color:#dceaff;
-      border:1px solid rgba(96,165,250,.18);
-      box-shadow:none;
-    }
-    .btn.warn{
-      background:rgba(239,68,68,.14);
-      color:#ffdada;
-      border:1px solid rgba(239,68,68,.25);
-      box-shadow:none;
-    }
-    .btn.small{
-      padding:8px 10px;
-      border-radius:12px;
-      font-size:12px;
-      font-weight:700;
-    }
-    .btn:disabled{
-      opacity:.45;cursor:not-allowed;box-shadow:none;
-    }
-
-    .row{display:flex;gap:10px;align-items:center}
-    .row.wrap{flex-wrap:wrap}
-    .row.between{justify-content:space-between}
-    .grow{flex:1}
-
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
-    }
-    .card + .card{margin-top:12px}
-    .card.compact{padding:12px}
-
-    .pills{
-      display:flex;
-      gap:8px;
-      overflow:auto;
-      padding-bottom:2px;
-      scrollbar-width:none;
-    }
-    .pills::-webkit-scrollbar{display:none}
-    .chip{
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      border:1px solid var(--line);
-      padding:9px 12px;
-      border-radius:999px;
-      white-space:nowrap;
-      font-size:12px;
-      font-weight:700;
-    }
-    .chip.active{
-      background:rgba(59,130,246,.16);
-      color:#e8f2ff;
-      border-color:rgba(96,165,250,.42);
-    }
-
-    .hero{
-      padding:14px;
-      border-radius:20px;
       background:
-        linear-gradient(135deg, rgba(59,130,246,.22), rgba(59,130,246,.06)),
-        var(--card-2);
-      border:1px solid rgba(96,165,250,.20);
-      box-shadow:var(--shadow);
-      margin-bottom:12px;
+        radial-gradient(1200px 500px at 50% -100px, rgba(59,130,246,.18), transparent 40%),
+        linear-gradient(180deg,#09101d 0%, #0b1220 20%, #0b1220 100%);
     }
-    .hero .date{
-      font-size:23px;
-      font-weight:800;
-      letter-spacing:.02em;
-      margin-bottom:6px;
+    .topbar{
+      position:sticky;top:0;z-index:15;
+      padding:calc(10px + var(--safe-top)) 16px 10px;
+      background:linear-gradient(180deg, rgba(10,16,28,.96), rgba(10,16,28,.88));
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line);
     }
-    .hero .muted{color:#b6c7e5;font-size:12px}
-    .stats-inline{
-      display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;
+    .topbar-row{
+      height:40px;display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
-    .tiny-stat{
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      font-size:12px;
-      color:#dce7fb;
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.02em}
+    .brand-logo{
+      width:34px;height:34px;border-radius:12px;
+      background:linear-gradient(180deg, #1d4ed8, #2563eb 45%, #0ea5e9 100%);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), 0 10px 20px rgba(37,99,235,.28);
+      display:grid;place-items:center;font-size:18px
     }
-
-    .exercise-card{
-      padding:12px;
+    .top-actions{display:flex;gap:8px}
+    .icon-btn,.pill-btn,.ghost-btn,.solid-btn,.danger-btn{
+      min-height:42px;border-radius:14px;border:1px solid var(--line);
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;
+      background:rgba(255,255,255,.03);
+    }
+    .icon-btn{width:42px;padding:0}
+    .pill-btn{padding:0 12px}
+    .solid-btn{
+      background:linear-gradient(180deg, rgba(59,130,246,.95), rgba(37,99,235,.95));
+      border-color:rgba(96,165,250,.28); box-shadow:0 10px 20px rgba(59,130,246,.20);
+    }
+    .danger-btn{
+      background:rgba(239,68,68,.1);color:#ffd6d6;border-color:rgba(239,68,68,.25)
+    }
+    .ghost-btn{background:rgba(255,255,255,.02)}
+    .main{
+      flex:1;overflow:hidden;position:relative;
+      padding-bottom:calc(var(--tab-h) + var(--safe-bottom));
+    }
+    .view{
+      height:100%;overflow:auto;display:none;padding:12px 14px 24px;
+    }
+    .view.active{display:block}
+    .timer-dock{
+      position:sticky;top:0;z-index:14;margin:0 0 12px;
+      background:linear-gradient(180deg, rgba(9,16,29,.95), rgba(9,16,29,.88));
+      backdrop-filter:blur(14px);
+      border:1px solid var(--line);
       border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.018), rgba(255,255,255,.008)), var(--card);
+      box-shadow:var(--shadow);
+      padding:10px 12px;
+    }
+    .timer-dock.running{border-color:rgba(59,130,246,.35); box-shadow:0 10px 30px rgba(59,130,246,.16)}
+    .timer-dock.finished{
+      border-color:rgba(34,197,94,.45);
+      box-shadow:0 0 0 1px rgba(34,197,94,.15), 0 0 26px rgba(34,197,94,.18), var(--shadow);
+      animation:pulseGlow 1s ease-in-out infinite;
+    }
+    @keyframes pulseGlow{
+      0%,100%{transform:translateZ(0); filter:brightness(1)}
+      50%{transform:translateY(-1px); filter:brightness(1.08)}
+    }
+    .timer-head{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;
+    }
+    .timer-meta{display:flex;flex-direction:column;gap:4px}
+    .timer-label{font-size:12px;color:var(--muted)}
+    .timer-title{font-weight:800;font-size:15px}
+    .timer-display{
+      font-size:28px;font-weight:900;letter-spacing:.04em;
+      color:#fff;text-shadow:0 0 16px rgba(59,130,246,.18)
+    }
+    .timer-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .timer-actions button{height:40px;border-radius:12px;font-size:13px}
+    .summary-row{
+      display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:10px;margin-bottom:12px;
+    }
+    .stat-card,.card{
+      background:linear-gradient(180deg, rgba(19,31,54,.98), rgba(15,24,41,.98));
       border:1px solid var(--line);
       box-shadow:var(--shadow);
-      margin-bottom:10px;
+      border-radius:18px;
     }
-    .exercise-top{
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      gap:10px;
-      align-items:start;
+    .stat-card{padding:12px}
+    .stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .stat-value{font-weight:900;font-size:19px}
+    .section{margin:14px 0}
+    .section-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 2px 10px;
     }
-    .ex-no{
-      min-width:28px;height:28px;
-      padding:0 8px;
+    .section-title{font-size:16px;font-weight:800}
+    .section-sub{font-size:12px;color:var(--muted)}
+    .card{padding:12px}
+    .row{display:flex;align-items:center;gap:10px}
+    .row.wrap{flex-wrap:wrap}
+    .grow{flex:1}
+    .muted{color:var(--muted)}
+    .mini{font-size:12px}
+    .tiny{font-size:11px}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      min-height:28px;padding:0 10px;border-radius:999px;
+      background:rgba(59,130,246,.11);border:1px solid rgba(59,130,246,.2);color:#dceaff;
+      font-size:12px;font-weight:700;
+    }
+    .badge.gray{background:rgba(255,255,255,.04);border-color:var(--line);color:#d7e3ff}
+    .badge.green{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.24)}
+    .badge.red{background:rgba(239,68,68,.11);border-color:rgba(239,68,68,.24)}
+    .text-input{
+      width:100%;min-height:48px;background:#0d1729;border:1px solid var(--line);color:var(--text)
+    }
+    .exercise-card{
+      padding:10px 10px 12px;margin-bottom:10px;
+      background:linear-gradient(180deg, rgba(19,31,54,.98), rgba(12,20,35,.98));
+      border:1px solid var(--line);
+      border-radius:20px;box-shadow:var(--shadow);
+    }
+    .exercise-head{
+      display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;
+    }
+    .exercise-thumb{
+      width:52px;height:52px;border-radius:16px;overflow:hidden;border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
       display:grid;place-items:center;
-      border-radius:999px;
-      background:rgba(59,130,246,.14);
-      border:1px solid rgba(96,165,250,.20);
-      color:#dceaff;
-      font-weight:800;
-      font-size:12px;
     }
-    .ex-name{
-      font-weight:800;
-      font-size:16px;
-      line-height:1.2;
-      margin-top:2px;
+    .exercise-thumb svg{width:100%;height:100%;display:block}
+    .exercise-title{font-size:16px;font-weight:800;line-height:1.2}
+    .exercise-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+    .exercise-body{margin-top:10px}
+    .exercise-summary{
+      display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;
     }
-    .ex-meta{
-      margin-top:6px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      font-size:12px;
-      color:var(--muted);
+    .mini-panel{
+      background:#0d1729;border:1px solid var(--line);border-radius:14px;padding:8px 10px;
     }
-    .metric{
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line);
-      padding:5px 8px;
-      border-radius:999px;
+    .mini-panel .label{font-size:11px;color:var(--muted);margin-bottom:4px}
+    .mini-panel .value{font-size:13px;font-weight:700}
+    .exercise-actions{
+      display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;
     }
-    .delta.plus{color:#93c5fd}
-    .delta.minus{color:#fca5a5}
-    .delta.none{color:var(--muted)}
-
-    .ex-actions{
-      display:flex;
-      gap:8px;
-      margin-top:10px;
-      flex-wrap:wrap;
-    }
-    .mini-btn{
-      padding:8px 10px;
-      border-radius:12px;
-      background:rgba(255,255,255,.045);
-      border:1px solid var(--line);
-      color:#dbe8ff;
-      font-size:12px;
-      font-weight:700;
-    }
-    .mini-btn.primary{
-      background:rgba(59,130,246,.14);
-      border-color:rgba(96,165,250,.24);
-      color:#e8f2ff;
-    }
-
-    .set-list{
-      margin-top:10px;
-      border-top:1px solid rgba(255,255,255,.06);
-      padding-top:10px;
-    }
-
-    .set-head,.set-row{
-      display:grid;
-      grid-template-columns:38px minmax(64px,1fr) minmax(64px,1fr) 42px 34px;
-      gap:8px;
-      align-items:center;
-    }
-    .set-head{
-      color:var(--muted);
-      font-size:11px;
-      margin-bottom:6px;
-      padding:0 2px;
+    .exercise-actions button{height:42px;font-size:13px}
+    .set-table{
+      display:flex;flex-direction:column;gap:8px;
     }
     .set-row{
-      padding:8px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.05);
-      border-radius:14px;
-      margin-bottom:8px;
+      display:grid;
+      grid-template-columns:40px 1fr 1fr 72px 46px;
+      gap:8px;align-items:center;
+      padding:8px;background:#0b1425;border:1px solid var(--line);border-radius:16px;
     }
-    .set-row.done{
-      background:rgba(34,197,94,.08);
-      border-color:rgba(34,197,94,.16);
+    .set-num{
+      width:40px;height:44px;border-radius:12px;background:rgba(255,255,255,.03);
+      display:flex;align-items:center;justify-content:center;font-weight:800;color:#dbe7ff
     }
-    .set-index{
-      width:28px;height:28px;border-radius:999px;
-      display:grid;place-items:center;
-      background:rgba(255,255,255,.05);
-      color:#dbe5f8;
-      font-size:12px;font-weight:800;
-      margin:auto;
-    }
-    .set-row.done .set-index{
-      background:rgba(34,197,94,.18);
-      color:#dfffea;
-    }
-    .set-input{
-      width:100%;
-      min-width:0;
+    .field-stack{display:flex;flex-direction:column;gap:5px}
+    .field-label{font-size:10px;color:var(--muted);line-height:1}
+    .compact-input{
+      height:44px;padding:0 12px;border-radius:12px;font-weight:700;font-size:16px;width:100%;
       text-align:center;
-      padding:10px 8px;
-      border-radius:12px;
-      background:#0c1627;
-      border:1px solid var(--line);
-      font-weight:700;
     }
-    .trash-mini{
-      width:30px;height:30px;border-radius:10px;
-      background:rgba(239,68,68,.12);
-      border:1px solid rgba(239,68,68,.18);
-      color:#ffc9c9;
-      display:grid;place-items:center;
-      font-size:14px;
+    .prev-inline{font-size:10px;color:var(--muted);text-align:center;line-height:1.15;min-height:22px}
+    .check-wrap{
+      display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;
     }
-
-    .collapse{
-      display:none;
-      margin-top:10px;
-      padding-top:10px;
-      border-top:1px solid rgba(255,255,255,.06);
+    .check-btn{
+      width:44px;height:44px;border-radius:14px;border:1px solid var(--line);
+      background:rgba(255,255,255,.04);font-size:18px;
     }
-    .collapse.open{display:block}
-    textarea.memo{
-      min-height:82px;
-      resize:vertical;
+    .check-btn.done{
+      background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.26);color:#cfffe0;
+      box-shadow:0 0 0 1px rgba(34,197,94,.06)
     }
-
-    .hint{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
+    .copy-btn{
+      width:44px;height:44px;border-radius:14px;border:1px solid var(--line);
+      background:rgba(255,255,255,.04);font-size:16px;
     }
-
-    .floating-action{
-      position:fixed;
-      left:14px;
-      right:14px;
-      bottom:calc(var(--tab-h) + 8px + var(--safe-bottom));
-      height:var(--action-h);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      pointer-events:none;
-      z-index:30;
+    .set-footer{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;
     }
-    .floating-action > *{pointer-events:auto}
-    .fab{
-      width:58px;height:58px;border-radius:999px;
-      background:linear-gradient(180deg, var(--blue), #2563eb);
-      box-shadow:0 14px 30px rgba(37,99,235,.36);
-      color:white;
-      border:none;
-      font-size:30px;
-      display:grid;place-items:center;
-      font-weight:500;
+    .divider{height:1px;background:var(--line);margin:10px 0}
+    .history-list,.exercise-list,.settings-list{display:flex;flex-direction:column;gap:10px}
+    .history-card,.library-card,.setting-card{
+      background:linear-gradient(180deg, rgba(19,31,54,.98), rgba(12,20,35,.98));
+      border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+      padding:12px;
     }
-    .save-pill{
-      height:52px;
-      min-width:130px;
-      border-radius:999px;
-      padding:0 18px;
-      background:rgba(15,23,40,.92);
-      backdrop-filter:blur(12px);
-      border:1px solid rgba(96,165,250,.18);
-      color:#eaf3ff;
-      display:flex;align-items:center;justify-content:center;
-      gap:8px;
-      font-weight:800;
-      box-shadow:var(--shadow);
+    .history-top,.library-top{display:flex;align-items:center;gap:10px}
+    .library-thumb{
+      width:52px;height:52px;flex:0 0 52px;border-radius:16px;overflow:hidden;
+      border:1px solid var(--line);background:#0e1728
     }
-    .save-pill .dot{
-      width:9px;height:9px;border-radius:999px;background:var(--green);
-      box-shadow:0 0 10px rgba(34,197,94,.5);
+    .library-thumb svg{width:100%;height:100%;display:block}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{
+      min-height:36px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.03);
+      border:1px solid var(--line);color:#dfe9ff;font-size:13px;font-weight:700;
+      display:inline-flex;align-items:center;justify-content:center;
     }
-
+    .chip.active{
+      background:rgba(59,130,246,.16);border-color:rgba(59,130,246,.28);color:white
+    }
+    .searchbar{
+      display:flex;gap:8px;align-items:center;margin-bottom:10px;
+    }
+    .searchbar input{flex:1;min-height:48px}
     .tabbar{
-      position:fixed;
-      left:0;right:0;bottom:0;
-      height:calc(var(--tab-h) + var(--safe-bottom));
-      padding:8px 10px calc(10px + var(--safe-bottom)) 10px;
-      background:rgba(10,16,28,.92);
-      backdrop-filter:blur(14px);
-      border-top:1px solid rgba(255,255,255,.07);
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      z-index:40;
+      position:fixed;left:0;right:0;bottom:0;z-index:20;
+      padding:8px 10px calc(8px + var(--safe-bottom));
+      background:linear-gradient(180deg, rgba(9,16,28,.06), rgba(9,16,28,.92) 18%, rgba(9,16,28,.98));
+      backdrop-filter:blur(16px);
+      border-top:1px solid var(--line);
     }
-    .tab{
-      border-radius:16px;
-      background:transparent;
-      color:var(--muted);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:4px;
-      font-size:11px;
-      font-weight:700;
-    }
-    .tab .ico{font-size:18px;line-height:1}
-    .tab.active{
-      background:rgba(59,130,246,.12);
-      color:#e7f1ff;
-      border:1px solid rgba(96,165,250,.22);
-    }
-
-    .calendar{
-      margin-top:12px;
-    }
-    .calendar-grid{
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:6px;
-    }
-    .dow,.day{
-      text-align:center;
-      font-size:12px;
-    }
-    .dow{
-      color:var(--muted);
-      padding:6px 0;
-      font-weight:700;
-    }
-    .day{
-      aspect-ratio:1/1;
-      border-radius:14px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.05);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      cursor:pointer;
-      user-select:none;
-    }
-    .day.outside{
-      color:rgba(255,255,255,.22);
-      background:transparent;
-      border-color:transparent;
-    }
-    .day.today{
-      outline:1px solid rgba(96,165,250,.4);
-    }
-    .day.selected{
-      background:rgba(59,130,246,.16);
-      border-color:rgba(96,165,250,.28);
-      color:#eef5ff;
-    }
-    .day.has-log::after{
-      content:"";
-      position:absolute;
-      bottom:7px;left:50%;
-      width:6px;height:6px;border-radius:999px;
-      transform:translateX(-50%);
-      background:var(--blue-2);
-      box-shadow:0 0 10px rgba(96,165,250,.55);
-    }
-
-    .search-bar{
-      display:flex; gap:10px; align-items:center;
-      margin-bottom:10px;
-    }
-
-    .library-list{
-      display:flex; flex-direction:column; gap:10px;
-      margin-top:12px;
-    }
-    .library-item{
-      display:grid;
-      grid-template-columns:28px 54px 1fr auto;
-      gap:10px;
-      align-items:center;
-      padding:10px;
-      border-radius:16px;
+    .tabbar-inner{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
       background:rgba(255,255,255,.03);
       border:1px solid var(--line);
+      border-radius:20px;padding:8px;box-shadow:var(--shadow);
     }
-    .thumb{
-      width:54px;height:54px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(circle at 30% 30%, rgba(96,165,250,.30), transparent 40%),
-        linear-gradient(180deg, #16233a, #101827);
-      display:grid;place-items:center;
-      overflow:hidden;
-      color:#dbe9ff;
-      font-size:24px;
+    .tab-btn{
+      min-height:56px;border-radius:16px;padding:6px 4px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+      color:#a8bcde;font-size:11px;font-weight:700;
     }
-    .thumb svg{width:100%;height:100%;display:block}
-    .lib-name{
-      font-weight:800;
-      font-size:15px;
+    .tab-btn .icon{font-size:20px;line-height:1}
+    .tab-btn.active{
+      background:linear-gradient(180deg, rgba(59,130,246,.18), rgba(59,130,246,.10));
+      border:1px solid rgba(59,130,246,.22);
+      color:white;
     }
-    .lib-meta{
-      margin-top:5px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      font-size:12px;
-      color:var(--muted);
+    .fab{
+      position:fixed;right:14px;bottom:calc(92px + var(--safe-bottom));z-index:18;
+      width:58px;height:58px;border-radius:18px;
+      background:linear-gradient(180deg, rgba(59,130,246,.98), rgba(37,99,235,.95));
+      color:#fff;font-size:28px;font-weight:700;
+      box-shadow:0 16px 36px rgba(37,99,235,.34), inset 0 0 0 1px rgba(255,255,255,.16);
+      display:flex;align-items:center;justify-content:center;
     }
-    .count-badge{
-      padding:5px 8px;
-      border-radius:999px;
-      background:rgba(255,255,255,.05);
-      border:1px solid var(--line);
-      font-size:12px;
-      font-weight:800;
-      color:#e6efff;
-    }
-    .lib-right{
-      display:flex;align-items:center;gap:8px;
-    }
-    .star-btn,.info-btn{
-      width:34px;height:34px;border-radius:12px;
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line);
-      display:grid;place-items:center;
-      color:#d9e6ff;
-      font-size:15px;
-    }
-    .star-btn.on{
-      background:rgba(245,158,11,.15);
-      border-color:rgba(245,158,11,.25);
-      color:#ffd37c;
-    }
-
-    .selection-bar{
-      position:sticky;
-      bottom:-2px;
-      margin-top:14px;
-      padding:12px;
-      border-radius:18px;
-      background:rgba(10,16,28,.94);
-      backdrop-filter:blur(12px);
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow:var(--shadow);
-    }
-
-    .stat-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      margin-top:12px;
-    }
-    .stat-card{
-      padding:12px;
-      border-radius:16px;
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--line);
-    }
-    .stat-card .label{
-      color:var(--muted);
-      font-size:12px;
-    }
-    .stat-card .value{
-      margin-top:8px;
-      font-size:22px;
-      font-weight:800;
-    }
-
-    .bar-chart{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:12px;
-    }
-    .bar-row{
-      display:grid;
-      grid-template-columns:1fr 74px;
-      gap:8px;
-      align-items:center;
-    }
-    .bar-wrap{
-      min-width:0;
-    }
-    .bar-label{
-      font-size:13px;
-      color:#e7f1ff;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      margin-bottom:6px;
-    }
-    .bar-track{
-      height:10px;
-      background:rgba(255,255,255,.06);
-      border-radius:999px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.05);
-    }
-    .bar-fill{
-      height:100%;
-      border-radius:999px;
-      background:linear-gradient(90deg, #3b82f6, #60a5fa);
-    }
-    .bar-val{
-      text-align:right;
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-    }
-
-    .list-simple{
-      display:flex; flex-direction:column; gap:10px; margin-top:12px;
-    }
-    .list-item{
-      display:flex; justify-content:space-between; gap:12px;
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-    }
-    .list-item .name{
-      font-weight:700;
-    }
-    .list-item .meta{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:4px;
-    }
-    .list-item .right{
-      text-align:right;
-      flex:0 0 auto;
-    }
-
-    .tools-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .section-title{
-      font-size:14px;
-      font-weight:800;
-      margin-bottom:8px;
-      color:#e8f2ff;
-      letter-spacing:.02em;
-    }
-
-    .empty{
-      padding:18px;
-      border-radius:18px;
-      border:1px dashed rgba(255,255,255,.12);
-      background:rgba(255,255,255,.02);
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
-    }
-
     .modal-backdrop{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.45);
-      display:none;
-      align-items:flex-end;
-      z-index:80;
-      padding:16px;
+      position:fixed;inset:0;background:rgba(3,8,16,.58);
+      backdrop-filter:blur(10px);
+      z-index:40;display:none;
     }
-    .modal-backdrop.show{display:flex}
-    .modal{
-      width:100%;
-      max-height:86vh;
-      overflow:auto;
-      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), #111a2c;
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:14px;
+    .modal-backdrop.show{display:block}
+    .sheet{
+      position:absolute;left:0;right:0;bottom:0;max-height:90vh;overflow:hidden;
+      border-top-left-radius:24px;border-top-right-radius:24px;
+      background:linear-gradient(180deg, rgba(17,27,47,.99), rgba(10,16,28,.99));
+      border-top:1px solid var(--line);box-shadow:0 -10px 40px rgba(0,0,0,.35);
+      transform:translateY(100%);transition:transform .25s ease;
+      padding-bottom:calc(12px + var(--safe-bottom));
     }
-    .modal-header{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      margin-bottom:10px;
+    .modal-backdrop.show .sheet{transform:translateY(0)}
+    .sheet-head{
+      padding:10px 16px 10px;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
-
-    .menu-list{
-      display:flex; flex-direction:column; gap:8px;
-      margin-top:10px;
+    .grabber{
+      position:absolute;left:50%;top:8px;transform:translateX(-50%);
+      width:42px;height:5px;border-radius:999px;background:rgba(255,255,255,.18)
     }
-    .menu-btn{
-      width:100%;
-      text-align:left;
-      padding:14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line);
-      color:#eef4ff;
-      font-weight:700;
+    .sheet-body{padding:12px 14px;max-height:calc(90vh - 64px);overflow:auto}
+    .sheet-title{font-size:16px;font-weight:800}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+    .field > label{font-size:12px;color:var(--muted)}
+    .toggle{
+      width:54px;height:32px;border-radius:999px;position:relative;
+      background:rgba(255,255,255,.08);border:1px solid var(--line);
+      transition:background .2s ease, border-color .2s ease;
     }
-    .menu-btn.red{
-      color:#ffd6d6;
-      background:rgba(239,68,68,.10);
-      border-color:rgba(239,68,68,.18);
+    .toggle::after{
+      content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+      background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .2s ease;
     }
-
+    .toggle.on{background:rgba(59,130,246,.32);border-color:rgba(59,130,246,.35)}
+    .toggle.on::after{transform:translateX(22px)}
+    .inline-setting{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px;border-radius:16px;background:#0d1729;border:1px solid var(--line)
+    }
     .toast{
-      position:fixed;
-      left:50%;
-      bottom:calc(var(--tab-h) + var(--action-h) + 20px + var(--safe-bottom));
-      transform:translateX(-50%);
-      background:rgba(15,23,40,.95);
-      border:1px solid rgba(96,165,250,.18);
-      color:#eef4ff;
-      padding:12px 14px;
-      border-radius:14px;
-      box-shadow:var(--shadow);
-      font-size:13px;
-      font-weight:700;
+      position:fixed;left:50%;transform:translateX(-50%);
+      bottom:calc(90px + var(--safe-bottom));
+      z-index:50;max-width:92vw;
+      background:rgba(10,16,28,.96);border:1px solid var(--line-strong);
+      border-radius:16px;padding:12px 14px;color:#fff;box-shadow:var(--shadow);
       display:none;
-      z-index:90;
-      max-width:calc(100vw - 28px);
-      text-align:center;
     }
-    .toast.show{display:block}
+    .toast.show{display:block;animation:toastIn .22s ease}
+    @keyframes toastIn{
+      from{transform:translateX(-50%) translateY(10px);opacity:0}
+      to{transform:translateX(-50%) translateY(0);opacity:1}
+    }
+    .alert-banner{
+      margin-top:8px;
+      display:none;
+      background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.24);
+      color:#eafff2;border-radius:14px;padding:10px 12px;font-weight:700;
+    }
+    .alert-banner.show{display:block}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .empty{
+      padding:24px 18px;border-radius:18px;border:1px dashed var(--line-strong);
+      background:rgba(255,255,255,.02);text-align:center;color:var(--muted)
+    }
+    .small-link{color:#bcd3ff;text-decoration:underline;text-underline-offset:2px}
+    .subgrid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+    .mt8{margin-top:8px}
+    .mt10{margin-top:10px}
+    .mt12{margin-top:12px}
+    .mb0{margin-bottom:0}
+    .hidden{display:none!important}
 
-    .hidden{display:none !important}
-
-    @media (min-width: 860px){
-      body{
-        max-width:430px;
-        margin:0 auto;
-        border-left:1px solid rgba(255,255,255,.07);
-        border-right:1px solid rgba(255,255,255,.07);
-      }
+    @media (max-width:390px){
+      .summary-row{grid-template-columns:1fr 1fr 1fr;gap:8px}
+      .stat-card{padding:10px}
+      .stat-value{font-size:17px}
+      .set-row{grid-template-columns:34px 1fr 1fr 64px 42px;gap:6px}
+      .set-num{width:34px}
+      .compact-input{font-size:15px}
     }
   </style>
 </head>
 <body>
-<div class="app">
-  <div class="screen-wrap">
-
-    <!-- HOME -->
-    <section class="screen active" id="screen-home">
-      <div class="header">
-        <div class="title-block">
-          <h1>ホーム</h1>
-          <div class="sub">今日のトレーニングを実行・記録</div>
-        </div>
-        <button class="icon-btn" id="btn-home-tools" aria-label="ツール">⚙️</button>
-      </div>
-
-      <div class="hero">
-        <div class="row between" style="align-items:flex-start">
-          <div class="grow">
-            <div class="date" id="homeDateLabel">--</div>
-            <div class="muted" id="homeDateSub">--</div>
-          </div>
-          <div class="row">
-            <button class="icon-btn" id="prevDayBtn" aria-label="前日">‹</button>
-            <button class="icon-btn" id="todayBtn" aria-label="今日">●</button>
-            <button class="icon-btn" id="nextDayBtn" aria-label="翌日">›</button>
-          </div>
-        </div>
-        <div class="stats-inline">
-          <div class="tiny-stat" id="heroExerciseCount">種目 0</div>
-          <div class="tiny-stat" id="heroSetCount">セット 0</div>
-          <div class="tiny-stat" id="heroVolume">総ボリューム 0</div>
-        </div>
-        <div class="row wrap" style="margin-top:12px">
-          <button class="btn small muted" id="loadPrevWorkoutBtn">前回のトレーニングを読み込む</button>
-          <button class="btn small ghost" id="jumpLibraryBtn">ライブラリから追加</button>
-        </div>
-      </div>
-
-      <div id="exerciseList"></div>
-      <div id="homeEmpty" class="empty hidden">
-        まだ種目がありません。<br>左下の＋から追加してください。
-      </div>
-    </section>
-
-    <!-- CALENDAR -->
-    <section class="screen" id="screen-calendar">
-      <div class="header">
-        <div class="title-block">
-          <h2>カレンダー</h2>
-          <div class="sub">記録日を一覧で確認</div>
-        </div>
-      </div>
-
-      <div class="card compact">
-        <div class="row between">
-          <button class="icon-btn" id="calPrevMonth">‹</button>
-          <div style="font-weight:800;font-size:18px" id="calMonthLabel">--</div>
-          <button class="icon-btn" id="calNextMonth">›</button>
-        </div>
-        <div class="calendar" id="calendarWrap"></div>
-      </div>
-
-      <div class="card compact" style="margin-top:12px">
-        <div class="section-title">選択日の内容</div>
-        <div id="calendarDayDetail" class="hint">日付をタップすると、その日の内容が表示されます。</div>
-      </div>
-    </section>
-
-    <!-- LIBRARY -->
-    <section class="screen" id="screen-library">
-      <div class="header">
-        <div class="title-block">
-          <h2>ライブラリ</h2>
-          <div class="sub">画像付き一覧から種目を選択</div>
-        </div>
-        <button class="icon-btn" id="btn-add-custom-exercise" aria-label="新規種目追加">＋</button>
-      </div>
-
-      <div class="card compact">
-        <div class="search-bar">
-          <input id="librarySearch" type="text" placeholder="種目名で検索" />
-        </div>
-        <div class="pills" id="categoryChips"></div>
-
-        <div class="row wrap" style="margin-top:10px">
-          <button class="chip" id="favoriteOnlyChip">★ ブックマークのみ</button>
-          <select id="sortSelect" style="max-width:160px">
-            <option value="frequency">頻度順</option>
-            <option value="name">名前順</option>
-            <option value="category">部位順</option>
-            <option value="newest">新しい順</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="library-list" id="libraryList"></div>
-
-      <div class="selection-bar">
-        <div class="row between">
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div class="brand">
+          <div class="brand-logo">🏋️</div>
           <div>
-            <div style="font-weight:800" id="selectedLibraryCount">0件選択中</div>
-            <div class="sub">複数選択して今日のメニューに一括追加</div>
-          </div>
-          <button class="btn" id="addSelectedExercisesBtn" disabled>トレーニングに追加</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ANALYTICS -->
-    <section class="screen" id="screen-analytics">
-      <div class="header">
-        <div class="title-block">
-          <h2>分析</h2>
-          <div class="sub">記録の全体傾向を確認</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">今月のサマリー</div>
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="label">月間実施日数</div>
-            <div class="value" id="statMonthDays">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="label">総記録件数</div>
-            <div class="value" id="statTotalLogs">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="label">総種目数</div>
-            <div class="value" id="statTotalExercises">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="label">総セット数</div>
-            <div class="value" id="statTotalSets">0</div>
+            <div style="font-size:15px;font-weight:900;">筋トレ記録</div>
+            <div class="mini muted" id="todayDateText">--</div>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">種目別 累計ボリューム</div>
-        <div class="bar-chart" id="volumeChart"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">種目別 最新記録</div>
-        <div class="list-simple" id="latestRecordsList"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">種目別 最高ボリューム</div>
-        <div class="list-simple" id="bestVolumeList"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">データ管理</div>
-        <div class="tools-grid">
-          <button class="btn ghost" id="exportJsonBtn">JSONエクスポート</button>
-          <button class="btn ghost" id="importJsonBtn">JSONインポート</button>
-          <button class="btn warn" id="deleteAllBtn" style="grid-column:1/-1">全データ削除</button>
-          <input type="file" id="importFileInput" accept=".json,application/json" class="hidden" />
-        </div>
-        <div class="hint" style="margin-top:10px">
-          端末内に localStorage で保存します。JSON でバックアップも可能です。
+        <div class="top-actions">
+          <button class="icon-btn" id="audioArmBtn" title="音を有効化">🔔</button>
+          <button class="icon-btn" id="saveWorkoutBtn" title="今日を履歴に保存">💾</button>
         </div>
       </div>
-    </section>
+    </header>
 
-  </div>
+    <main class="main">
+      <!-- HOME -->
+      <section class="view active" id="view-home">
+        <div class="timer-dock" id="timerDock">
+          <div class="timer-head">
+            <div class="timer-meta">
+              <div class="timer-label">インターバル</div>
+              <div class="timer-title" id="timerTitle">待機中</div>
+            </div>
+            <div class="timer-display" id="timerDisplay">00:00</div>
+          </div>
+          <div class="timer-actions">
+            <button class="ghost-btn" id="timerStartBtn">開始</button>
+            <button class="ghost-btn" id="timerPauseBtn">一時停止</button>
+            <button class="ghost-btn" id="timerResumeBtn">再開</button>
+            <button class="ghost-btn" id="timerResetBtn">リセット</button>
+          </div>
+          <div class="alert-banner" id="timerAlert">休憩終了。次セットへ。</div>
+        </div>
 
-  <!-- floating action -->
-  <div class="floating-action" id="homeActionArea">
-    <button class="fab" id="fabAddExercise" aria-label="種目追加">＋</button>
-    <button class="save-pill" id="saveTodayBtn">
-      <span class="dot"></span>
-      <span>保存</span>
-    </button>
-  </div>
-
-  <!-- tabbar -->
-  <nav class="tabbar">
-    <button class="tab active" data-tab="home">
-      <div class="ico">🏠</div>
-      <div>ホーム</div>
-    </button>
-    <button class="tab" data-tab="calendar">
-      <div class="ico">📅</div>
-      <div>カレンダー</div>
-    </button>
-    <button class="tab" data-tab="library">
-      <div class="ico">📚</div>
-      <div>ライブラリ</div>
-    </button>
-    <button class="tab" data-tab="analytics">
-      <div class="ico">📈</div>
-      <div>分析</div>
-    </button>
-  </nav>
-</div>
-
-<!-- modal -->
-<div class="modal-backdrop" id="modalBackdrop">
-  <div class="modal" id="modal">
-    <div class="modal-header">
-      <div>
-        <div style="font-size:18px;font-weight:800" id="modalTitle">詳細</div>
-        <div class="sub" id="modalSub"></div>
-      </div>
-      <button class="icon-btn" id="closeModalBtn">✕</button>
-    </div>
-    <div id="modalContent"></div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-(() => {
-  "use strict";
-
-  const STORAGE_KEY = "workout_app_v1_final";
-  const DAY_NAMES = ["日","月","火","水","木","金","土"];
-  const CATEGORIES = ["すべて","胸","背筋","肩","腕","下半身","腹筋"];
-
-  const INITIAL_LIBRARY = [
-    {id:uid("lib"),name:"ベンチプレス",category:"胸",image:"bench",isFavorite:false,createdAt:Date.now()-17000000},
-    {id:uid("lib"),name:"インクラインプレス",category:"胸",image:"incline",isFavorite:false,createdAt:Date.now()-16000000},
-    {id:uid("lib"),name:"ラットプルダウン",category:"背筋",image:"lat",isFavorite:false,createdAt:Date.now()-15000000},
-    {id:uid("lib"),name:"シーテッドロー",category:"背筋",image:"row",isFavorite:false,createdAt:Date.now()-14000000},
-    {id:uid("lib"),name:"ショルダープレス",category:"肩",image:"shoulder",isFavorite:false,createdAt:Date.now()-13000000},
-    {id:uid("lib"),name:"サイドレイズ",category:"肩",image:"side",isFavorite:false,createdAt:Date.now()-12000000},
-    {id:uid("lib"),name:"アームカール",category:"腕",image:"curl",isFavorite:false,createdAt:Date.now()-11000000},
-    {id:uid("lib"),name:"トライセプスプレスダウン",category:"腕",image:"triceps",isFavorite:false,createdAt:Date.now()-10000000},
-    {id:uid("lib"),name:"レッグプレス",category:"下半身",image:"legpress",isFavorite:false,createdAt:Date.now()-9000000},
-    {id:uid("lib"),name:"ルーマニアンデッドリフト",category:"下半身",image:"rdl",isFavorite:false,createdAt:Date.now()-8000000},
-    {id:uid("lib"),name:"スミスマシンスクワット",category:"下半身",image:"smith",isFavorite:false,createdAt:Date.now()-7000000},
-    {id:uid("lib"),name:"スタンディングカーフレイズマシン",category:"下半身",image:"calf",isFavorite:false,createdAt:Date.now()-6000000},
-    {id:uid("lib"),name:"デクラインクランチ",category:"腹筋",image:"abs",isFavorite:false,createdAt:Date.now()-5000000},
-    {id:uid("lib"),name:"レッグカール",category:"下半身",image:"legcurl",isFavorite:false,createdAt:Date.now()-4000000},
-    {id:uid("lib"),name:"ヒップアブダクションマシン",category:"下半身",image:"abduction",isFavorite:false,createdAt:Date.now()-3000000},
-    {id:uid("lib"),name:"レッグエクステンション",category:"下半身",image:"extension",isFavorite:false,createdAt:Date.now()-2000000},
-    {id:uid("lib"),name:"ヒップアダクション",category:"下半身",image:"adduction",isFavorite:false,createdAt:Date.now()-1000000},
-  ];
-
-  const defaultState = () => ({
-    version:1,
-    currentDateKey: formatDateKey(new Date()),
-    workouts: {},
-    library: INITIAL_LIBRARY,
-    ui: {
-      currentTab: "home",
-      libraryCategory: "すべて",
-      librarySearch: "",
-      libraryFavoriteOnly: false,
-      librarySort: "frequency",
-      selectedLibraryIds: [],
-      calendarCursor: startOfMonth(new Date()).getTime(),
-      calendarSelectedDateKey: formatDateKey(new Date())
-    }
-  });
-
-  let state = loadState();
-  ensureStateShape();
-
-  const $ = (sel, root=document) => root.querySelector(sel);
-  const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
-
-  const screenEls = {
-    home: $("#screen-home"),
-    calendar: $("#screen-calendar"),
-    library: $("#screen-library"),
-    analytics: $("#screen-analytics"),
-  };
-
-  const modalBackdrop = $("#modalBackdrop");
-  const modalTitle = $("#modalTitle");
-  const modalSub = $("#modalSub");
-  const modalContent = $("#modalContent");
-  const toastEl = $("#toast");
-
-  bindEvents();
-  renderAll();
-
-  function bindEvents(){
-    $$(".tab").forEach(btn=>{
-      btn.addEventListener("click", () => {
-        switchTab(btn.dataset.tab);
-      });
-    });
-
-    $("#prevDayBtn").addEventListener("click", () => shiftCurrentDate(-1));
-    $("#nextDayBtn").addEventListener("click", () => shiftCurrentDate(1));
-    $("#todayBtn").addEventListener("click", () => {
-      state.currentDateKey = formatDateKey(new Date());
-      state.ui.calendarSelectedDateKey = state.currentDateKey;
-      persistAndRender();
-    });
-
-    $("#fabAddExercise").addEventListener("click", () => switchTab("library"));
-    $("#jumpLibraryBtn").addEventListener("click", () => switchTab("library"));
-    $("#saveTodayBtn").addEventListener("click", () => {
-      saveState();
-      showToast("保存しました");
-    });
-
-    $("#loadPrevWorkoutBtn").addEventListener("click", handleLoadPrevWorkout);
-
-    $("#btn-home-tools").addEventListener("click", openToolsModal);
-
-    $("#calPrevMonth").addEventListener("click", () => {
-      const d = new Date(state.ui.calendarCursor);
-      d.setMonth(d.getMonth()-1);
-      state.ui.calendarCursor = startOfMonth(d).getTime();
-      persistAndRender(false);
-      renderCalendar();
-    });
-    $("#calNextMonth").addEventListener("click", () => {
-      const d = new Date(state.ui.calendarCursor);
-      d.setMonth(d.getMonth()+1);
-      state.ui.calendarCursor = startOfMonth(d).getTime();
-      persistAndRender(false);
-      renderCalendar();
-    });
-
-    $("#librarySearch").addEventListener("input", (e) => {
-      state.ui.librarySearch = e.target.value;
-      persistAndRender(false);
-      renderLibrary();
-    });
-
-    $("#favoriteOnlyChip").addEventListener("click", () => {
-      state.ui.libraryFavoriteOnly = !state.ui.libraryFavoriteOnly;
-      persistAndRender(false);
-      renderLibrary();
-    });
-
-    $("#sortSelect").addEventListener("change", (e) => {
-      state.ui.librarySort = e.target.value;
-      persistAndRender(false);
-      renderLibrary();
-    });
-
-    $("#addSelectedExercisesBtn").addEventListener("click", addSelectedExercisesToCurrentWorkout);
-    $("#btn-add-custom-exercise").addEventListener("click", openCustomExerciseModal);
-
-    $("#exportJsonBtn").addEventListener("click", exportJson);
-    $("#importJsonBtn").addEventListener("click", () => $("#importFileInput").click());
-    $("#importFileInput").addEventListener("change", importJson);
-    $("#deleteAllBtn").addEventListener("click", deleteAllData);
-
-    $("#closeModalBtn").addEventListener("click", closeModal);
-    modalBackdrop.addEventListener("click", (e) => {
-      if(e.target === modalBackdrop) closeModal();
-    });
-  }
-
-  function ensureStateShape(){
-    if(!state || typeof state !== "object") state = defaultState();
-    if(!state.workouts || typeof state.workouts !== "object") state.workouts = {};
-    if(!Array.isArray(state.library)) state.library = INITIAL_LIBRARY.slice();
-    if(!state.ui || typeof state.ui !== "object") state.ui = defaultState().ui;
-    if(!state.currentDateKey) state.currentDateKey = formatDateKey(new Date());
-    if(!state.ui.calendarCursor) state.ui.calendarCursor = startOfMonth(new Date()).getTime();
-    if(!state.ui.calendarSelectedDateKey) state.ui.calendarSelectedDateKey = state.currentDateKey;
-    if(!Array.isArray(state.ui.selectedLibraryIds)) state.ui.selectedLibraryIds = [];
-  }
-
-  function loadState(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return defaultState();
-      const parsed = JSON.parse(raw);
-      return parsed;
-    }catch(e){
-      return defaultState();
-    }
-  }
-
-  function saveState(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
-
-  function persistAndRender(showSaved=false){
-    saveState();
-    renderAll();
-    if(showSaved) showToast("保存しました");
-  }
-
-  function switchTab(tab){
-    state.ui.currentTab = tab;
-    saveState();
-
-    Object.entries(screenEls).forEach(([key, el]) => {
-      el.classList.toggle("active", key === tab);
-    });
-    $$(".tab").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
-    $("#homeActionArea").classList.toggle("hidden", tab !== "home");
-
-    if(tab === "calendar") renderCalendar();
-    if(tab === "library") renderLibrary();
-    if(tab === "analytics") renderAnalytics();
-  }
-
-  function renderAll(){
-    switchTab(state.ui.currentTab || "home");
-    renderHome();
-    renderCalendar();
-    renderLibrary();
-    renderAnalytics();
-  }
-
-  function getWorkout(dateKey){
-    if(!state.workouts[dateKey]){
-      state.workouts[dateKey] = {
-        dateKey,
-        exercises: [],
-        createdAt: Date.now(),
-        updatedAt: Date.now()
-      };
-    }
-    return state.workouts[dateKey];
-  }
-
-  function renderHome(){
-    const workout = getWorkout(state.currentDateKey);
-    workout.updatedAt = Date.now();
-    const d = parseDateKey(state.currentDateKey);
-
-    $("#homeDateLabel").textContent = formatDateJP(d);
-    $("#homeDateSub").textContent = `${DAY_NAMES[d.getDay()]}曜日`;
-    $("#heroExerciseCount").textContent = `種目 ${workout.exercises.length}`;
-    $("#heroSetCount").textContent = `セット ${workout.exercises.reduce((a,e)=>a+(e.sets?.length||0),0)}`;
-    $("#heroVolume").textContent = `総ボリューム ${formatMetric(totalWorkoutVolume(workout))}`;
-
-    const list = $("#exerciseList");
-    list.innerHTML = "";
-
-    if(!workout.exercises.length){
-      $("#homeEmpty").classList.remove("hidden");
-    }else{
-      $("#homeEmpty").classList.add("hidden");
-    }
-
-    workout.exercises.forEach((ex, idx) => {
-      const prev = findPreviousExerciseRecord(ex.libraryId, state.currentDateKey);
-      const currentVolume = exerciseVolume(ex);
-      const prevVolume = prev ? exerciseVolume(prev.exercise) : null;
-      const currentReps = exerciseTotalReps(ex);
-      const prevReps = prev ? exerciseTotalReps(prev.exercise) : null;
-      const hasWeight = ex.sets.some(s => num(s.weight) > 0) || (prev && prev.exercise.sets.some(s => num(s.weight) > 0));
-      const delta = hasWeight
-        ? (prev ? currentVolume - prevVolume : null)
-        : (prev ? currentReps - prevReps : null);
-
-      const card = document.createElement("div");
-      card.className = "exercise-card";
-      card.innerHTML = `
-        <div class="exercise-top">
-          <div class="ex-no">${idx + 1}</div>
-          <div>
-            <div class="ex-name">${escapeHtml(ex.name)}</div>
-            <div class="ex-meta">
-              <span class="metric">${hasWeight ? formatMetric(currentVolume) : `総回数 ${currentReps}回`}</span>
-              <span class="metric ${deltaClass(delta)}">${
-                prev
-                  ? (hasWeight
-                      ? `前回差分 ${delta > 0 ? "+" : ""}${formatMetric(delta)}`
-                      : `前回差分 ${delta > 0 ? "+" : ""}${delta}回`)
-                  : "前回記録なし"
-              }</span>
+        <div class="section">
+          <div class="card">
+            <div class="field mb0">
+              <label for="workoutNameInput">今日のトレーニング名</label>
+              <input id="workoutNameInput" class="text-input" type="text" placeholder="例：Push Day / Pull Day / 脚" />
             </div>
           </div>
-          <button class="icon-btn" data-action="menu" data-id="${ex.id}" style="width:36px;height:36px;border-radius:12px">⋯</button>
         </div>
 
-        <div class="ex-actions">
-          <button class="mini-btn primary" data-action="add-set" data-id="${ex.id}">＋セット追加</button>
-          <button class="mini-btn" data-action="apply-prev-set" data-id="${ex.id}">前回セット反映</button>
-          <button class="mini-btn" data-action="toggle-detail" data-id="${ex.id}">詳細</button>
-        </div>
-
-        <div class="set-list">
-          <div class="set-head">
-            <div>Set</div>
-            <div>kg</div>
-            <div>回</div>
-            <div>✓</div>
-            <div></div>
+        <div class="summary-row">
+          <div class="stat-card">
+            <div class="stat-label">種目数</div>
+            <div class="stat-value" id="homeExerciseCount">0</div>
           </div>
-          <div class="set-body" id="set-body-${ex.id}"></div>
-        </div>
-
-        <div class="collapse ${ex.isDetailOpen ? "open" : ""}" id="detail-${ex.id}">
-          <div class="section-title">メモ</div>
-          <textarea class="memo" placeholder="フォーム、RIR、感覚、注意点など">${escapeHtml(ex.memo || "")}</textarea>
-          <div class="hint" style="margin-top:8px">自動保存されます。</div>
-          <div style="margin-top:12px">
-            <div class="section-title">最近の記録</div>
-            <div class="hint">${prev ? renderPrevSummary(prev) : "前回記録はありません。"}</div>
+          <div class="stat-card">
+            <div class="stat-label">総セット</div>
+            <div class="stat-value" id="homeSetCount">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">総ボリューム</div>
+            <div class="stat-value" id="homeVolume">0</div>
           </div>
         </div>
-      `;
 
-      const setBody = card.querySelector(`#set-body-${cssEscape(ex.id)}`);
-      ex.sets.forEach((set, sidx) => {
-        const row = document.createElement("div");
-        row.className = `set-row ${set.done ? "done" : ""}`;
-        row.innerHTML = `
-          <div class="set-index">${sidx + 1}</div>
-          <input class="set-input" inputmode="decimal" placeholder="kg" value="${set.weight ?? ""}" />
-          <input class="set-input" inputmode="numeric" placeholder="回" value="${set.reps ?? ""}" />
-          <input type="checkbox" ${set.done ? "checked" : ""} />
-          <button class="trash-mini" aria-label="削除">✕</button>
-        `;
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <div class="section-title">今日のメニュー</div>
+              <div class="section-sub">1種目カード内でセットを積み上げ</div>
+            </div>
+            <button class="solid-btn" id="openExercisePickerBtn">＋ 種目追加</button>
+          </div>
+          <div id="homeExerciseList"></div>
+        </div>
+      </section>
 
-        const [weightInput, repsInput, doneInput, delBtn] = [
-          row.children[1],
-          row.children[2],
-          row.children[3],
-          row.children[4]
-        ];
+      <!-- HISTORY -->
+      <section class="view" id="view-history">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <div class="section-title">履歴</div>
+              <div class="section-sub">過去トレーニングの確認とコピー</div>
+            </div>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </section>
 
-        weightInput.addEventListener("input", () => {
-          set.weight = sanitizeNumber(weightInput.value);
-          touchWorkout();
-          persistAndRender(false);
+      <!-- EXERCISES -->
+      <section class="view" id="view-exercises">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <div class="section-title">種目一覧</div>
+              <div class="section-sub">画像付き一覧から今日に追加</div>
+            </div>
+            <button class="solid-btn" id="openCustomExerciseBtn">＋ カスタム追加</button>
+          </div>
+
+          <div class="searchbar">
+            <input id="exerciseSearchInput" type="search" placeholder="種目検索" />
+          </div>
+
+          <div class="chips" id="muscleFilterChips"></div>
+
+          <div class="section mt12">
+            <div id="exerciseLibraryList" class="exercise-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view" id="view-settings">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <div class="section-title">設定</div>
+              <div class="section-sub">インターバル / 音 / データ管理</div>
+            </div>
+          </div>
+
+          <div class="settings-list">
+            <div class="setting-card">
+              <div class="section-title" style="font-size:14px;margin-bottom:10px;">インターバル設定</div>
+              <div class="inline-setting">
+                <div>
+                  <div style="font-weight:700">インターバル機能</div>
+                  <div class="mini muted">セット完了時にタイマーを利用</div>
+                </div>
+                <button class="toggle" id="settingIntervalEnabled"></button>
+              </div>
+
+              <div class="grid-2 mt10">
+                <div class="field">
+                  <label for="settingIntervalMin">分</label>
+                  <input id="settingIntervalMin" inputmode="numeric" type="number" min="0" max="59" />
+                </div>
+                <div class="field">
+                  <label for="settingIntervalSec">秒</label>
+                  <input id="settingIntervalSec" inputmode="numeric" type="number" min="0" max="59" />
+                </div>
+              </div>
+
+              <div class="inline-setting mt10">
+                <div>
+                  <div style="font-weight:700">自動タイマー開始</div>
+                  <div class="mini muted">セット完了時に自動で開始</div>
+                </div>
+                <button class="toggle" id="settingAutoTimer"></button>
+              </div>
+            </div>
+
+            <div class="setting-card">
+              <div class="section-title" style="font-size:14px;margin-bottom:10px;">通知</div>
+              <div class="inline-setting">
+                <div>
+                  <div style="font-weight:700">音</div>
+                  <div class="mini muted">Web Audio APIで自己生成</div>
+                </div>
+                <button class="toggle" id="settingSoundEnabled"></button>
+              </div>
+              <div class="inline-setting mt10">
+                <div>
+                  <div style="font-weight:700">バイブ</div>
+                  <div class="mini muted">対応端末のみ試行</div>
+                </div>
+                <button class="toggle" id="settingVibrationEnabled"></button>
+              </div>
+              <div class="mt10">
+                <button class="solid-btn" id="testNotificationBtn" style="width:100%;">通知テスト</button>
+              </div>
+            </div>
+
+            <div class="setting-card">
+              <div class="section-title" style="font-size:14px;margin-bottom:10px;">データ</div>
+              <div class="grid-2">
+                <button class="ghost-btn" id="exportDataBtn">JSON出力</button>
+                <button class="ghost-btn" id="importDataBtn">JSON読込</button>
+              </div>
+              <div class="field mt10">
+                <label for="dataTransferArea">エクスポート / インポート領域</label>
+                <textarea id="dataTransferArea" rows="10" placeholder="ここにJSONを表示 / 貼り付け"></textarea>
+              </div>
+              <button class="danger-btn" id="clearAllDataBtn" style="width:100%;">全データ削除</button>
+            </div>
+
+            <div class="setting-card">
+              <div class="section-title" style="font-size:14px;margin-bottom:10px;">アプリ情報</div>
+              <div class="mini muted">iPhone Safari / GitHub Pages 向け 1ファイル完結版</div>
+              <div class="mt10 row wrap">
+                <span class="badge gray">ダークテーマ</span>
+                <span class="badge gray">青アクセント</span>
+                <span class="badge gray">localStorage保存</span>
+                <span class="badge gray">オフライン風運用</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <button class="fab" id="fabAddExercise" title="種目追加">＋</button>
+
+    <nav class="tabbar">
+      <div class="tabbar-inner">
+        <button class="tab-btn active" data-tab="home">
+          <div class="icon">🏠</div>
+          <div>ホーム</div>
+        </button>
+        <button class="tab-btn" data-tab="history">
+          <div class="icon">🕘</div>
+          <div>履歴</div>
+        </button>
+        <button class="tab-btn" data-tab="exercises">
+          <div class="icon">🧩</div>
+          <div>種目</div>
+        </button>
+        <button class="tab-btn" data-tab="settings">
+          <div class="icon">⚙️</div>
+          <div>設定</div>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- SHEET -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="sheet" id="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <div class="sheet-title" id="sheetTitle">タイトル</div>
+        <button class="icon-btn" id="closeSheetBtn">✕</button>
+      </div>
+      <div class="sheet-body" id="sheetBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      // -----------------------------
+      // Storage / State
+      // -----------------------------
+      const STORAGE_KEY = "workout_app_single_file_v1";
+      const state = {
+        activeTab: "home",
+        exerciseFilter: "すべて",
+        exerciseSearch: "",
+        modal: null,
+        timerTickId: null,
+        audioContext: null,
+        audioUnlocked: false,
+        timerFlashTimeout: null,
+        data: null
+      };
+
+      // -----------------------------
+      // Utilities
+      // -----------------------------
+      const $ = (sel, root = document) => root.querySelector(sel);
+      const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+      const now = () => Date.now();
+      const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+      const clamp = (n, min, max) => Math.min(Math.max(Number(n) || 0, min), max);
+      const uid = (prefix = "id") => `${prefix}_${Math.random().toString(36).slice(2, 9)}_${Date.now().toString(36)}`;
+      const formatDate = (dateStrOrMs) => {
+        const d = typeof dateStrOrMs === "number" ? new Date(dateStrOrMs) : new Date(dateStrOrMs);
+        const y = d.getFullYear();
+        const m = `${d.getMonth() + 1}`.padStart(2, "0");
+        const day = `${d.getDate()}`.padStart(2, "0");
+        return `${y}/${m}/${day}`;
+      };
+      const formatDateLong = (dateStrOrMs) => {
+        const d = typeof dateStrOrMs === "number" ? new Date(dateStrOrMs) : new Date(dateStrOrMs);
+        return d.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric", weekday: "short" });
+      };
+      const formatTimeMMSS = (ms) => {
+        const total = Math.max(0, Math.ceil(ms / 1000));
+        const m = String(Math.floor(total / 60)).padStart(2, "0");
+        const s = String(total % 60).padStart(2, "0");
+        return `${m}:${s}`;
+      };
+      const setText = (sel, text) => {
+        const el = $(sel);
+        if (el) el.textContent = text;
+      };
+      const escapeHtml = (str) => String(str ?? "").replace(/[&<>"']/g, s => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[s]));
+      const calcSetVolume = (set) => (Number(set.weight) || 0) * (Number(set.reps) || 0);
+      const calcExerciseVolume = (exerciseEntry) => (exerciseEntry.sets || []).reduce((sum, s) => sum + calcSetVolume(s), 0);
+      const countCompletedSets = (exerciseEntry) => (exerciseEntry.sets || []).filter(s => s.completed).length;
+      const getTotalVolume = () => (state.data.currentWorkout.exercises || []).reduce((sum, ex) => sum + calcExerciseVolume(ex), 0);
+      const getTotalSetCount = () => (state.data.currentWorkout.exercises || []).reduce((sum, ex) => sum + (ex.sets?.length || 0), 0);
+      const getMuscles = () => ["すべて", "胸", "背中", "肩", "脚", "腕", "腹", "全身"];
+      const summarizeSets = (sets = []) => {
+        if (!sets.length) return "記録なし";
+        return sets.map(s => `${Number(s.weight)||0}kg×${Number(s.reps)||0}`).join(", ");
+      };
+      const toast = (msg, ms = 1800) => {
+        const el = $("#toast");
+        el.textContent = msg;
+        el.classList.add("show");
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove("show"), ms);
+      };
+
+      // -----------------------------
+      // Exercise SVG Generator
+      // -----------------------------
+      function getExerciseIconSvg(muscle = "全身", tone = "#3b82f6") {
+        const colors = {
+          胸: "#3b82f6",
+          背中: "#0ea5e9",
+          肩: "#8b5cf6",
+          脚: "#22c55e",
+          腕: "#f59e0b",
+          腹: "#ef4444",
+          全身: "#64748b"
+        };
+        const c = colors[muscle] || tone;
+        const body = `
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="${c}" stop-opacity="0.95"/>
+              <stop offset="100%" stop-color="#0b1220" stop-opacity="0.85"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="64" height="64" rx="16" fill="url(#g)"/>
+          <circle cx="32" cy="15" r="6" fill="rgba(255,255,255,.96)"/>
+          <rect x="27" y="22" width="10" height="15" rx="4" fill="rgba(255,255,255,.96)"/>
+          <rect x="19" y="24" width="8" height="18" rx="4" fill="rgba(255,255,255,.92)"/>
+          <rect x="37" y="24" width="8" height="18" rx="4" fill="rgba(255,255,255,.92)"/>
+          <rect x="25" y="36" width="6" height="17" rx="3" fill="rgba(255,255,255,.9)"/>
+          <rect x="33" y="36" width="6" height="17" rx="3" fill="rgba(255,255,255,.9)"/>
+          ${muscle === "胸" ? `<path d="M18 26 Q32 16 46 26" stroke="rgba(255,255,255,.28)" stroke-width="4" fill="none"/>` : ""}
+          ${muscle === "背中" ? `<path d="M21 28 Q32 40 43 28" stroke="rgba(255,255,255,.3)" stroke-width="4" fill="none"/>` : ""}
+          ${muscle === "肩" ? `<circle cx="22" cy="26" r="5" fill="rgba(255,255,255,.18)"/><circle cx="42" cy="26" r="5" fill="rgba(255,255,255,.18)"/>` : ""}
+          ${muscle === "脚" ? `<rect x="24" y="38" width="5" height="18" rx="2.5" fill="rgba(255,255,255,.18)"/><rect x="35" y="38" width="5" height="18" rx="2.5" fill="rgba(255,255,255,.18)"/>` : ""}
+          ${muscle === "腕" ? `<rect x="16" y="24" width="8" height="18" rx="4" fill="rgba(255,255,255,.18)"/><rect x="40" y="24" width="8" height="18" rx="4" fill="rgba(255,255,255,.18)"/>` : ""}
+          ${muscle === "腹" ? `<rect x="28" y="24" width="8" height="18" rx="3" fill="rgba(255,255,255,.18)"/>` : ""}
+        </svg>`;
+        return body;
+      }
+
+      // -----------------------------
+      // Default Data
+      // -----------------------------
+      function createDefaultExercises() {
+        return [
+          ["ベンチプレス", "胸"], ["インクラインベンチプレス", "胸"], ["ダンベルプレス", "胸"],
+          ["スクワット", "脚"], ["レッグプレス", "脚"], ["ルーマニアンデッドリフト", "脚"],
+          ["ラットプルダウン", "背中"], ["シーテッドロー", "背中"], ["ケーブルプルオーバー", "背中"],
+          ["ショルダープレス", "肩"], ["サイドレイズ", "肩"], ["リアレイズ", "肩"],
+          ["アームカール", "腕"], ["トライセプスプレスダウン", "腕"], ["アブクランチ", "腹"]
+        ].map(([name, muscle]) => ({
+          id: uid("exm"),
+          name,
+          muscle,
+          iconType: muscle,
+          createdAt: now()
+        }));
+      }
+
+      function createDefaultCurrentWorkout() {
+        const d = new Date();
+        const ymd = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        return {
+          id: uid("cw"),
+          date: ymd,
+          name: "",
+          exercises: [],
+          startedAt: now(),
+          updatedAt: now()
+        };
+      }
+
+      function createDefaultSettings() {
+        return {
+          intervalEnabled: true,
+          intervalMinutes: 1,
+          intervalSeconds: 30,
+          soundEnabled: true,
+          vibrationEnabled: true,
+          autoTimerStart: true
+        };
+      }
+
+      function createDefaultData() {
+        return {
+          exercises: createDefaultExercises(),
+          workouts: [],
+          currentWorkout: createDefaultCurrentWorkout(),
+          settings: createDefaultSettings(),
+          timer: {
+            running: false,
+            paused: false,
+            endAt: null,
+            remainingMs: 0,
+            startedAt: null,
+            label: "",
+            finished: false
+          }
+        };
+      }
+
+      function migrateData(raw) {
+        const base = createDefaultData();
+        const data = raw && typeof raw === "object" ? raw : {};
+        return {
+          exercises: Array.isArray(data.exercises) ? data.exercises : base.exercises,
+          workouts: Array.isArray(data.workouts) ? data.workouts : [],
+          currentWorkout: data.currentWorkout && typeof data.currentWorkout === "object"
+            ? {
+                ...createDefaultCurrentWorkout(),
+                ...data.currentWorkout,
+                exercises: Array.isArray(data.currentWorkout.exercises) ? data.currentWorkout.exercises : []
+              }
+            : createDefaultCurrentWorkout(),
+          settings: { ...base.settings, ...(data.settings || {}) },
+          timer: { ...base.timer, ...(data.timer || {}) }
+        };
+      }
+
+      function saveData() {
+        state.data.currentWorkout.updatedAt = now();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+      }
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          state.data = migrateData(raw ? JSON.parse(raw) : null);
+        } catch (e) {
+          console.error(e);
+          state.data = createDefaultData();
+        }
+      }
+
+      // -----------------------------
+      // History / Previous Records
+      // -----------------------------
+      function getWorkoutExerciseHistory(exerciseMasterId) {
+        return state.data.workouts
+          .flatMap(w => (w.exercises || []).map(ex => ({ workout: w, exercise: ex })))
+          .filter(item => item.exercise.exerciseMasterId === exerciseMasterId)
+          .sort((a, b) => (b.workout.savedAt || 0) - (a.workout.savedAt || 0));
+      }
+
+      function getPreviousExerciseRecord(exerciseMasterId) {
+        const history = getWorkoutExerciseHistory(exerciseMasterId);
+        return history.length ? history[0].exercise : null;
+      }
+
+      function getPreviousSet(exerciseMasterId, index) {
+        const prevEx = getPreviousExerciseRecord(exerciseMasterId);
+        if (!prevEx || !Array.isArray(prevEx.sets)) return null;
+        return prevEx.sets[index] || null;
+      }
+
+      function getExerciseMasterById(id) {
+        return state.data.exercises.find(ex => ex.id === id) || null;
+      }
+
+      function getCurrentEntryById(entryId) {
+        return state.data.currentWorkout.exercises.find(ex => ex.id === entryId) || null;
+      }
+
+      function getExerciseUseCount(exerciseMasterId) {
+        let count = 0;
+        for (const w of state.data.workouts) {
+          if ((w.exercises || []).some(ex => ex.exerciseMasterId === exerciseMasterId)) count++;
+        }
+        if ((state.data.currentWorkout.exercises || []).some(ex => ex.exerciseMasterId === exerciseMasterId)) count++;
+        return count;
+      }
+
+      function getLastRecordSummary(exerciseMasterId) {
+        const prev = getPreviousExerciseRecord(exerciseMasterId);
+        return prev ? summarizeSets(prev.sets) : "記録なし";
+      }
+
+      // -----------------------------
+      // Timer / Notification
+      // -----------------------------
+      function getDefaultIntervalMs() {
+        const s = state.data.settings;
+        return (clamp(s.intervalMinutes, 0, 59) * 60 + clamp(s.intervalSeconds, 0, 59)) * 1000;
+      }
+
+      function unlockAudio() {
+        try {
+          if (!state.audioContext) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return false;
+            state.audioContext = new Ctx();
+          }
+          if (state.audioContext.state === "suspended") {
+            state.audioContext.resume();
+          }
+          const osc = state.audioContext.createOscillator();
+          const gain = state.audioContext.createGain();
+          osc.frequency.value = 440;
+          gain.gain.value = 0.0001;
+          osc.connect(gain);
+          gain.connect(state.audioContext.destination);
+          osc.start();
+          osc.stop(state.audioContext.currentTime + 0.03);
+          state.audioUnlocked = true;
+          $("#audioArmBtn").style.opacity = "1";
+          toast("通知音を有効化しました");
+          return true;
+        } catch (e) {
+          console.error(e);
+          toast("音の有効化に失敗しました");
+          return false;
+        }
+      }
+
+      function beepPattern() {
+        if (!state.data.settings.soundEnabled) return;
+        try {
+          if (!state.audioContext) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return;
+            state.audioContext = new Ctx();
+          }
+          if (state.audioContext.state === "suspended") return;
+
+          const ctx = state.audioContext;
+          const notes = [880, 660, 988];
+          const start = ctx.currentTime + 0.01;
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, start + i * 0.16);
+            gain.gain.setValueAtTime(0.0001, start + i * 0.16);
+            gain.gain.linearRampToValueAtTime(0.18, start + i * 0.16 + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + i * 0.16 + 0.12);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start + i * 0.16);
+            osc.stop(start + i * 0.16 + 0.13);
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function vibratePattern() {
+        if (!state.data.settings.vibrationEnabled) return;
+        try {
+          if (navigator.vibrate) navigator.vibrate([180, 80, 180]);
+        } catch (_) {}
+      }
+
+      function timerState() {
+        return state.data.timer;
+      }
+
+      function startTimer(ms, label = "休憩中") {
+        const t = timerState();
+        const duration = Math.max(1000, Number(ms) || getDefaultIntervalMs());
+        t.running = true;
+        t.paused = false;
+        t.startedAt = now();
+        t.endAt = t.startedAt + duration;
+        t.remainingMs = duration;
+        t.label = label;
+        t.finished = false;
+        saveData();
+        runTimerLoop();
+        renderTimer();
+      }
+
+      function pauseTimer() {
+        const t = timerState();
+        if (!t.running || t.paused) return;
+        t.remainingMs = Math.max(0, t.endAt - now());
+        t.paused = true;
+        t.running = false;
+        saveData();
+        renderTimer();
+      }
+
+      function resumeTimer() {
+        const t = timerState();
+        if (!t.paused) return;
+        t.running = true;
+        t.paused = false;
+        t.startedAt = now();
+        t.endAt = t.startedAt + (t.remainingMs || getDefaultIntervalMs());
+        saveData();
+        runTimerLoop();
+        renderTimer();
+      }
+
+      function resetTimer() {
+        const t = timerState();
+        t.running = false;
+        t.paused = false;
+        t.endAt = null;
+        t.remainingMs = 0;
+        t.startedAt = null;
+        t.label = "";
+        t.finished = false;
+        if (state.timerTickId) {
+          clearInterval(state.timerTickId);
+          state.timerTickId = null;
+        }
+        clearTimeout(state.timerFlashTimeout);
+        saveData();
+        renderTimer();
+      }
+
+      function finishTimer() {
+        const t = timerState();
+        t.running = false;
+        t.paused = false;
+        t.remainingMs = 0;
+        t.endAt = null;
+        t.finished = true;
+        saveData();
+        if (state.timerTickId) {
+          clearInterval(state.timerTickId);
+          state.timerTickId = null;
+        }
+        beepPattern();
+        vibratePattern();
+        renderTimer();
+        clearTimeout(state.timerFlashTimeout);
+        state.timerFlashTimeout = setTimeout(() => {
+          t.finished = false;
+          saveData();
+          renderTimer();
+        }, 7000);
+      }
+
+      function runTimerLoop() {
+        if (state.timerTickId) clearInterval(state.timerTickId);
+        state.timerTickId = setInterval(() => {
+          const t = timerState();
+          if (!t.running || !t.endAt) return;
+          const remaining = t.endAt - now();
+          t.remainingMs = Math.max(0, remaining);
+          if (remaining <= 0) {
+            finishTimer();
+          } else {
+            renderTimer();
+          }
+        }, 250);
+      }
+
+      function restoreTimerLoopIfNeeded() {
+        const t = timerState();
+        if (t.running && t.endAt) {
+          const remaining = t.endAt - now();
+          if (remaining <= 0) {
+            finishTimer();
+          } else {
+            t.remainingMs = remaining;
+            runTimerLoop();
+          }
+        }
+      }
+
+      // -----------------------------
+      // Workout Mutations
+      // -----------------------------
+      function addExerciseToCurrentWorkout(exerciseMasterId) {
+        const master = getExerciseMasterById(exerciseMasterId);
+        if (!master) return;
+        const current = state.data.currentWorkout.exercises || [];
+        current.push({
+          id: uid("entry"),
+          exerciseMasterId: master.id,
+          collapsed: false,
+          customIntervalSec: null,
+          sets: [
+            { weight: "", reps: "", completed: false }
+          ]
         });
-        repsInput.addEventListener("input", () => {
-          set.reps = sanitizeNumber(repsInput.value, true);
-          touchWorkout();
-          persistAndRender(false);
+        saveData();
+        renderHome();
+        renderExerciseLibrary();
+        setActiveTab("home");
+        toast(`${master.name} を追加しました`);
+      }
+
+      function createSetFromPrev(exerciseMasterId, index) {
+        const prev = getPreviousSet(exerciseMasterId, index);
+        return {
+          weight: prev ? (prev.weight ?? "") : "",
+          reps: prev ? (prev.reps ?? "") : "",
+          completed: false
+        };
+      }
+
+      function addSet(entryId, usePrev = false) {
+        const entry = getCurrentEntryById(entryId);
+        if (!entry) return;
+        const idx = entry.sets.length;
+        entry.sets.push(usePrev ? createSetFromPrev(entry.exerciseMasterId, idx) : { weight: "", reps: "", completed: false });
+        saveData();
+        renderHome();
+      }
+
+      function copyPreviousWorkoutForExercise(entryId) {
+        const entry = getCurrentEntryById(entryId);
+        if (!entry) return;
+        const prev = getPreviousExerciseRecord(entry.exerciseMasterId);
+        if (!prev || !Array.isArray(prev.sets) || !prev.sets.length) {
+          toast("前回記録がありません");
+          return;
+        }
+        entry.sets = prev.sets.map(s => ({
+          weight: s.weight ?? "",
+          reps: s.reps ?? "",
+          completed: false
+        }));
+        saveData();
+        renderHome();
+        toast("前回セットを流用しました");
+      }
+
+      function removeExerciseEntry(entryId) {
+        const list = state.data.currentWorkout.exercises || [];
+        const idx = list.findIndex(x => x.id === entryId);
+        if (idx >= 0) {
+          list.splice(idx, 1);
+          saveData();
+          renderHome();
+        }
+      }
+
+      function toggleCollapseExercise(entryId) {
+        const entry = getCurrentEntryById(entryId);
+        if (!entry) return;
+        entry.collapsed = !entry.collapsed;
+        saveData();
+        renderHome();
+      }
+
+      function updateSetField(entryId, setIndex, field, value) {
+        const entry = getCurrentEntryById(entryId);
+        if (!entry || !entry.sets[setIndex]) return;
+        if (field === "weight" || field === "reps") {
+          entry.sets[setIndex][field] = value === "" ? "" : String(clamp(value, 0, 9999));
+        } else {
+          entry.sets[setIndex][field] = value;
+        }
+        saveData();
+        renderHomeStats();
+      }
+
+      function copyPrevSetIntoCurrent(entryId, setIndex) {
+        const entry = getCurrentEntryById(entryId);
+        if (!entry) return;
+        const prev = getPreviousSet(entry.exerciseMasterId, setIndex);
+        if (!prev) {
+          toast("前回の同セットがありません");
+          return;
+        }
+        entry.sets[setIndex].weight = prev.weight ?? "";
+        entry.sets[setIndex].reps = prev.reps ?? "";
+        entry.sets[setIndex].completed = false;
+        saveData();
+        renderHome();
+      }
+
+      function duplicatePreviousSet(entryId, setIndex) {
+        const entry = getCurrentEntryById(entryId);
+        if (!entry || !entry.sets[setIndex]) return;
+        const src = entry.sets[setIndex];
+        entry.sets.push({
+          weight: src.weight,
+          reps: src.reps,
+          completed: false
         });
-        doneInput.addEventListener("change", () => {
-          set.done = doneInput.checked;
-          touchWorkout();
-          persistAndRender(false);
+        saveData();
+        renderHome();
+      }
+
+      function toggleSetComplete(entryId, setIndex) {
+        const entry = getCurrentEntryById(entryId);
+        if (!entry || !entry.sets[setIndex]) return;
+        const set = entry.sets[setIndex];
+        set.completed = !set.completed;
+        saveData();
+        renderHome();
+        if (set.completed && state.data.settings.intervalEnabled && state.data.settings.autoTimerStart) {
+          const label = `${getExerciseMasterById(entry.exerciseMasterId)?.name || "休憩"} / ${setIndex + 1}set後`;
+          startTimer(getDefaultIntervalMs(), label);
+        }
+      }
+
+      function moveExercise(entryId, direction) {
+        const arr = state.data.currentWorkout.exercises || [];
+        const idx = arr.findIndex(x => x.id === entryId);
+        const target = idx + direction;
+        if (idx < 0 || target < 0 || target >= arr.length) return;
+        const [item] = arr.splice(idx, 1);
+        arr.splice(target, 0, item);
+        saveData();
+        renderHome();
+      }
+
+      function saveCurrentWorkoutToHistory() {
+        const current = state.data.currentWorkout;
+        if (!current.exercises.length) {
+          toast("保存する種目がありません");
+          return;
+        }
+        const snapshot = deepCopy(current);
+        snapshot.id = uid("workout");
+        snapshot.savedAt = now();
+        snapshot.totalVolume = snapshot.exercises.reduce((sum, ex) => sum + calcExerciseVolume(ex), 0);
+        snapshot.totalSets = snapshot.exercises.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0);
+        snapshot.exerciseCount = snapshot.exercises.length;
+        state.data.workouts.unshift(snapshot);
+        state.data.currentWorkout = createDefaultCurrentWorkout();
+        resetTimer();
+        saveData();
+        renderAll();
+        toast("今日のトレーニングを履歴に保存しました");
+      }
+
+      function copyHistoryWorkoutToCurrent(workoutId) {
+        const found = state.data.workouts.find(w => w.id === workoutId);
+        if (!found) return;
+        const copied = deepCopy(found);
+        state.data.currentWorkout = createDefaultCurrentWorkout();
+        state.data.currentWorkout.name = copied.name || "";
+        state.data.currentWorkout.exercises = (copied.exercises || []).map(ex => ({
+          id: uid("entry"),
+          exerciseMasterId: ex.exerciseMasterId,
+          collapsed: false,
+          customIntervalSec: ex.customIntervalSec ?? null,
+          sets: (ex.sets || []).map(s => ({
+            weight: s.weight ?? "",
+            reps: s.reps ?? "",
+            completed: false
+          }))
+        }));
+        saveData();
+        renderAll();
+        setActiveTab("home");
+        toast("履歴メニューを今日にコピーしました");
+      }
+
+      // -----------------------------
+      // Modal / Sheet
+      // -----------------------------
+      function openSheet(title, html, onAfterRender) {
+        $("#sheetTitle").textContent = title;
+        $("#sheetBody").innerHTML = html;
+        $("#modalBackdrop").classList.add("show");
+        state.modal = title;
+        if (typeof onAfterRender === "function") onAfterRender();
+      }
+
+      function closeSheet() {
+        $("#modalBackdrop").classList.remove("show");
+        $("#sheetBody").innerHTML = "";
+        state.modal = null;
+      }
+
+      function openExercisePickerSheet() {
+        const items = getFilteredExercises();
+        openSheet("種目を追加", `
+          <div class="searchbar">
+            <input id="sheetExerciseSearch" type="search" placeholder="種目検索" value="${escapeHtml(state.exerciseSearch)}" />
+          </div>
+          <div class="chips" id="sheetMuscleFilter">${getMuscles().map(m => `
+            <button class="chip ${state.exerciseFilter === m ? "active" : ""}" data-muscle="${escapeHtml(m)}">${escapeHtml(m)}</button>
+          `).join("")}</div>
+          <div class="section mt12">
+            <div id="sheetExerciseList" class="exercise-list">
+              ${renderExerciseLibraryCards(items, true)}
+            </div>
+          </div>
+        `, () => {
+          $("#sheetExerciseSearch").addEventListener("input", e => {
+            state.exerciseSearch = e.target.value.trim();
+            openExercisePickerSheet();
+          });
+          $$("#sheetMuscleFilter .chip").forEach(btn => {
+            btn.addEventListener("click", () => {
+              state.exerciseFilter = btn.dataset.muscle || "すべて";
+              openExercisePickerSheet();
+            });
+          });
+          $$("#sheetExerciseList [data-add-exercise]").forEach(btn => {
+            btn.addEventListener("click", () => {
+              addExerciseToCurrentWorkout(btn.dataset.addExercise);
+              closeSheet();
+            });
+          });
         });
-        delBtn.addEventListener("click", () => {
-          if(confirm("このセットを削除しますか？")){
-            ex.sets.splice(sidx,1);
-            touchWorkout();
-            persistAndRender(false);
+      }
+
+      function openHistoryDetailSheet(workoutId) {
+        const w = state.data.workouts.find(x => x.id === workoutId);
+        if (!w) return;
+        openSheet("履歴詳細", `
+          <div class="card">
+            <div class="row" style="justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div style="font-weight:900;font-size:17px;">${escapeHtml(w.name || "トレーニング")}</div>
+                <div class="mini muted">${escapeHtml(formatDateLong(w.date))}</div>
+              </div>
+              <span class="badge gray">${w.exerciseCount || 0}種目</span>
+            </div>
+            <div class="summary-row mt10">
+              <div class="stat-card">
+                <div class="stat-label">総セット</div>
+                <div class="stat-value">${w.totalSets || 0}</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">総ボリューム</div>
+                <div class="stat-value">${w.totalVolume || 0}</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">保存日</div>
+                <div class="stat-value" style="font-size:14px;">${formatDate(w.savedAt || now())}</div>
+              </div>
+            </div>
+            <div class="mt10">
+              <button class="solid-btn" id="copyThisWorkoutBtn" style="width:100%;">この日のメニューを今日にコピー</button>
+            </div>
+          </div>
+
+          <div class="section">
+            ${(w.exercises || []).map(ex => {
+              const master = getExerciseMasterById(ex.exerciseMasterId) || { name: "種目", muscle: "全身" };
+              return `
+                <div class="history-card">
+                  <div class="library-top">
+                    <div class="library-thumb">${getExerciseIconSvg(master.muscle)}</div>
+                    <div class="grow">
+                      <div style="font-weight:800;">${escapeHtml(master.name)}</div>
+                      <div class="mini muted">${escapeHtml(master.muscle)}</div>
+                    </div>
+                    <span class="badge gray">${calcExerciseVolume(ex)}</span>
+                  </div>
+                  <div class="mt10 set-table">
+                    ${(ex.sets || []).map((s, i) => `
+                      <div class="set-row">
+                        <div class="set-num">${i + 1}</div>
+                        <div class="mini-panel"><div class="label">重量</div><div class="value">${Number(s.weight)||0}kg</div></div>
+                        <div class="mini-panel"><div class="label">回数</div><div class="value">${Number(s.reps)||0}回</div></div>
+                        <div class="mini-panel" style="grid-column:span 2;"><div class="label">ボリューム</div><div class="value">${calcSetVolume(s)}</div></div>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `, () => {
+          $("#copyThisWorkoutBtn").addEventListener("click", () => {
+            copyHistoryWorkoutToCurrent(workoutId);
+            closeSheet();
+          });
+        });
+      }
+
+      function openCustomExerciseSheet(editId = null) {
+        const target = editId ? getExerciseMasterById(editId) : null;
+        openSheet(editId ? "カスタム種目編集" : "カスタム種目追加", `
+          <div class="field">
+            <label for="customExName">種目名</label>
+            <input id="customExName" type="text" placeholder="例：スミスマシンインクラインプレス" value="${escapeHtml(target?.name || "")}" />
+          </div>
+          <div class="field">
+            <label for="customExMuscle">主な部位</label>
+            <select id="customExMuscle">
+              ${["胸","背中","肩","脚","腕","腹","全身"].map(m => `
+                <option value="${m}" ${target?.muscle === m ? "selected" : ""}>${m}</option>
+              `).join("")}
+            </select>
+          </div>
+          <div class="grid-2">
+            <button class="solid-btn" id="saveCustomExerciseBtn">${editId ? "更新" : "追加"}</button>
+            ${editId ? `<button class="danger-btn" id="deleteCustomExerciseBtn">削除</button>` : `<button class="ghost-btn" id="cancelCustomExerciseBtn">閉じる</button>`}
+          </div>
+        `, () => {
+          $("#saveCustomExerciseBtn").addEventListener("click", () => {
+            const name = $("#customExName").value.trim();
+            const muscle = $("#customExMuscle").value;
+            if (!name) {
+              toast("種目名を入力してください");
+              return;
+            }
+            if (editId && target) {
+              target.name = name;
+              target.muscle = muscle;
+            } else {
+              state.data.exercises.unshift({
+                id: uid("exm"),
+                name,
+                muscle,
+                iconType: muscle,
+                createdAt: now()
+              });
+            }
+            saveData();
+            renderExerciseLibrary();
+            renderHome();
+            closeSheet();
+            toast(editId ? "種目を更新しました" : "種目を追加しました");
+          });
+
+          const cancelBtn = $("#cancelCustomExerciseBtn");
+          if (cancelBtn) cancelBtn.addEventListener("click", closeSheet);
+
+          const deleteBtn = $("#deleteCustomExerciseBtn");
+          if (deleteBtn) {
+            deleteBtn.addEventListener("click", () => {
+              const usedInCurrent = state.data.currentWorkout.exercises.some(ex => ex.exerciseMasterId === editId);
+              if (usedInCurrent) {
+                toast("今日のメニューにあるため削除できません");
+                return;
+              }
+              state.data.exercises = state.data.exercises.filter(ex => ex.id !== editId);
+              saveData();
+              renderExerciseLibrary();
+              closeSheet();
+              toast("種目を削除しました");
+            });
           }
         });
-
-        setBody.appendChild(row);
-      });
-
-      card.querySelector(`[data-action="add-set"]`).addEventListener("click", () => {
-        addSetToExercise(ex.id);
-      });
-      card.querySelector(`[data-action="apply-prev-set"]`).addEventListener("click", () => {
-        applyPreviousSetsToExercise(ex.id);
-      });
-      card.querySelector(`[data-action="toggle-detail"]`).addEventListener("click", () => {
-        ex.isDetailOpen = !ex.isDetailOpen;
-        touchWorkout();
-        persistAndRender(false);
-      });
-      card.querySelector(`[data-action="menu"]`).addEventListener("click", () => {
-        openExerciseMenu(ex.id);
-      });
-
-      const memoTextarea = card.querySelector("textarea.memo");
-      memoTextarea.addEventListener("input", () => {
-        ex.memo = memoTextarea.value;
-        touchWorkout();
-        saveState();
-      });
-
-      list.appendChild(card);
-    });
-  }
-
-  function addSetToExercise(exerciseId){
-    const ex = findExerciseInCurrent(exerciseId);
-    if(!ex) return;
-    const last = ex.sets[ex.sets.length - 1];
-    ex.sets.push({
-      id: uid("set"),
-      weight: last ? last.weight : "",
-      reps: last ? last.reps : "",
-      done: false
-    });
-    touchWorkout();
-    persistAndRender(false);
-  }
-
-  function applyPreviousSetsToExercise(exerciseId){
-    const ex = findExerciseInCurrent(exerciseId);
-    if(!ex) return;
-    const prev = findPreviousExerciseRecord(ex.libraryId, state.currentDateKey);
-    if(!prev){
-      showToast("前回記録がありません");
-      return;
-    }
-    ex.sets = prev.exercise.sets.map(s => ({
-      id: uid("set"),
-      weight: s.weight ?? "",
-      reps: s.reps ?? "",
-      done: false
-    }));
-    touchWorkout();
-    persistAndRender(false);
-    showToast("前回セットを反映しました");
-  }
-
-  function handleLoadPrevWorkout(){
-    const prevWorkout = findPreviousWorkout(state.currentDateKey);
-    if(!prevWorkout){
-      showToast("読み込める前回トレーニングがありません");
-      return;
-    }
-    if(!confirm(`直近の ${prevWorkout.dateKey} の内容を読み込みますか？現在の内容は上書きされます。`)) return;
-
-    const current = getWorkout(state.currentDateKey);
-    current.exercises = prevWorkout.exercises.map(ex => cloneExerciseForDate(ex));
-    touchWorkout();
-    persistAndRender(false);
-    showToast("前回のトレーニングを読み込みました");
-  }
-
-  function openExerciseMenu(exerciseId){
-    const ex = findExerciseInCurrent(exerciseId);
-    if(!ex) return;
-    const prev = findPreviousExerciseRecord(ex.libraryId, state.currentDateKey);
-
-    openModal(`「${ex.name}」`, "種目メニュー", `
-      <div class="menu-list">
-        <button class="menu-btn" id="menu-duplicate">種目を複製</button>
-        <button class="menu-btn" id="menu-recent">最近の記録を見る</button>
-        <button class="menu-btn" id="menu-toggle-memo">${ex.isDetailOpen ? "詳細を閉じる" : "詳細を開く"}</button>
-        <button class="menu-btn red" id="menu-delete">種目を削除</button>
-      </div>
-      <div style="margin-top:14px" class="hint">
-        ${prev ? renderPrevSummary(prev) : "前回記録はありません。"}
-      </div>
-    `);
-
-    $("#menu-duplicate").addEventListener("click", () => {
-      const workout = getWorkout(state.currentDateKey);
-      const copy = cloneExerciseForDate(ex);
-      copy.id = uid("ex");
-      workout.exercises.push(copy);
-      touchWorkout();
-      closeModal();
-      persistAndRender(false);
-      showToast("種目を複製しました");
-    });
-
-    $("#menu-recent").addEventListener("click", () => {
-      closeModal();
-      openRecentRecordsModal(ex.libraryId);
-    });
-
-    $("#menu-toggle-memo").addEventListener("click", () => {
-      ex.isDetailOpen = !ex.isDetailOpen;
-      touchWorkout();
-      closeModal();
-      persistAndRender(false);
-    });
-
-    $("#menu-delete").addEventListener("click", () => {
-      if(confirm("この種目を削除しますか？")){
-        const workout = getWorkout(state.currentDateKey);
-        workout.exercises = workout.exercises.filter(i => i.id !== ex.id);
-        touchWorkout();
-        closeModal();
-        persistAndRender(false);
-        showToast("種目を削除しました");
       }
-    });
-  }
 
-  function renderCalendar(){
-    const wrap = $("#calendarWrap");
-    wrap.innerHTML = "";
+      // -----------------------------
+      // Renderers
+      // -----------------------------
+      function renderTimer() {
+        const t = timerState();
+        const dock = $("#timerDock");
+        dock.classList.toggle("running", !!t.running);
+        dock.classList.toggle("finished", !!t.finished);
+        $("#timerAlert").classList.toggle("show", !!t.finished);
 
-    const cursor = new Date(state.ui.calendarCursor);
-    const year = cursor.getFullYear();
-    const month = cursor.getMonth();
-    $("#calMonthLabel").textContent = `${year}年${month + 1}月`;
+        if (t.finished) {
+          $("#timerTitle").textContent = "休憩終了";
+          $("#timerDisplay").textContent = "00:00";
+        } else if (t.running) {
+          $("#timerTitle").textContent = t.label || "休憩中";
+          $("#timerDisplay").textContent = formatTimeMMSS(t.remainingMs || 0);
+        } else if (t.paused) {
+          $("#timerTitle").textContent = "一時停止中";
+          $("#timerDisplay").textContent = formatTimeMMSS(t.remainingMs || 0);
+        } else {
+          $("#timerTitle").textContent = "待機中";
+          $("#timerDisplay").textContent = formatTimeMMSS(getDefaultIntervalMs());
+        }
+      }
 
-    const weekHead = document.createElement("div");
-    weekHead.className = "calendar-grid";
-    DAY_NAMES.forEach(d => {
-      const el = document.createElement("div");
-      el.className = "dow";
-      el.textContent = d;
-      weekHead.appendChild(el);
-    });
-    wrap.appendChild(weekHead);
+      function renderHomeStats() {
+        setText("#homeExerciseCount", String(state.data.currentWorkout.exercises.length));
+        setText("#homeSetCount", String(getTotalSetCount()));
+        setText("#homeVolume", String(getTotalVolume()));
+      }
 
-    const grid = document.createElement("div");
-    grid.className = "calendar-grid";
+      function renderExerciseEntryCard(entry) {
+        const master = getExerciseMasterById(entry.exerciseMasterId) || { name:"不明な種目", muscle:"全身" };
+        const useCount = getExerciseUseCount(master.id);
+        const prev = getPreviousExerciseRecord(master.id);
+        const prevSummary = prev ? summarizeSets(prev.sets) : "記録なし";
+        const volume = calcExerciseVolume(entry);
+        const completed = countCompletedSets(entry);
+        const diffLabel = entry.sets.length && prev?.sets?.length
+          ? getDiffSummary(entry, prev)
+          : "差分なし";
 
-    const first = new Date(year, month, 1);
-    const start = new Date(first);
-    start.setDate(1 - first.getDay());
-
-    for(let i=0; i<42; i++){
-      const day = new Date(start);
-      day.setDate(start.getDate() + i);
-      const dateKey = formatDateKey(day);
-      const inMonth = day.getMonth() === month;
-      const hasLog = !!state.workouts[dateKey] && state.workouts[dateKey].exercises.length > 0;
-      const isToday = dateKey === formatDateKey(new Date());
-      const isSelected = dateKey === state.ui.calendarSelectedDateKey;
-
-      const cell = document.createElement("button");
-      cell.className = `day ${inMonth ? "" : "outside"} ${hasLog ? "has-log" : ""} ${isToday ? "today" : ""} ${isSelected ? "selected" : ""}`;
-      cell.textContent = day.getDate();
-      cell.addEventListener("click", () => {
-        state.ui.calendarSelectedDateKey = dateKey;
-        persistAndRender(false);
-        renderCalendarDayDetail();
-      });
-      grid.appendChild(cell);
-    }
-    wrap.appendChild(grid);
-    renderCalendarDayDetail();
-  }
-
-  function renderCalendarDayDetail(){
-    const box = $("#calendarDayDetail");
-    const key = state.ui.calendarSelectedDateKey;
-    if(!key){
-      box.innerHTML = "日付をタップしてください。";
-      return;
-    }
-    const workout = state.workouts[key];
-    const d = parseDateKey(key);
-
-    if(!workout || !workout.exercises.length){
-      box.innerHTML = `<div style="font-weight:800">${formatDateJP(d)}</div><div class="sub">記録なし</div>`;
-      return;
-    }
-
-    const totalSets = workout.exercises.reduce((a,e)=>a + e.sets.length, 0);
-    const totalVol = totalWorkoutVolume(workout);
-
-    box.innerHTML = `
-      <div style="font-weight:800;font-size:16px">${formatDateJP(d)}</div>
-      <div class="sub" style="margin-top:6px">${workout.exercises.length}種目 / ${totalSets}セット / 総ボリューム ${formatMetric(totalVol)}</div>
-      <div class="list-simple" style="margin-top:12px">
-        ${workout.exercises.map(ex => `
-          <div class="list-item">
-            <div>
-              <div class="name">${escapeHtml(ex.name)}</div>
-              <div class="meta">${ex.sets.length}セット / ${exerciseHasWeight(ex) ? formatMetric(exerciseVolume(ex)) : `総回数 ${exerciseTotalReps(ex)}回`}</div>
+        return `
+          <div class="exercise-card" data-entry-id="${entry.id}">
+            <div class="exercise-head">
+              <div class="exercise-thumb">${getExerciseIconSvg(master.muscle)}</div>
+              <div class="grow">
+                <div class="exercise-title">${escapeHtml(master.name)}</div>
+                <div class="exercise-meta">
+                  <span class="badge gray">${escapeHtml(master.muscle)}</span>
+                  <span class="badge gray">${useCount}回</span>
+                  <span class="badge ${completed ? "green" : "gray"}">${completed}/${entry.sets.length}完了</span>
+                </div>
+              </div>
+              <div class="row" style="gap:6px;">
+                <button class="icon-btn" data-move-up="${entry.id}" title="上へ">↑</button>
+                <button class="icon-btn" data-move-down="${entry.id}" title="下へ">↓</button>
+                <button class="icon-btn" data-collapse="${entry.id}" title="折りたたみ">${entry.collapsed ? "▾" : "▴"}</button>
+              </div>
             </div>
-            <div class="right">
-              <button class="btn small ghost" data-jump="${key}">開く</button>
+
+            <div class="exercise-body ${entry.collapsed ? "hidden" : ""}">
+              <div class="exercise-summary">
+                <div class="mini-panel">
+                  <div class="label">今日の総ボリューム</div>
+                  <div class="value">${volume}</div>
+                </div>
+                <div class="mini-panel">
+                  <div class="label">前回差分</div>
+                  <div class="value">${escapeHtml(diffLabel)}</div>
+                </div>
+                <div class="mini-panel" style="grid-column:span 2;">
+                  <div class="label">前回記録</div>
+                  <div class="value">${escapeHtml(prevSummary)}</div>
+                </div>
+              </div>
+
+              <div class="exercise-actions">
+                <button class="ghost-btn" data-add-set="${entry.id}">＋ セット追加</button>
+                <button class="ghost-btn" data-load-prev="${entry.id}">前回セット流用</button>
+                <button class="danger-btn" data-delete-entry="${entry.id}">削除</button>
+              </div>
+
+              <div class="set-table">
+                ${(entry.sets || []).map((set, idx) => renderSetRow(entry, set, idx)).join("")}
+              </div>
             </div>
-          </div>
-        `).join("")}
-      </div>
-    `;
-
-    $$("[data-jump]", box).forEach(btn => {
-      btn.addEventListener("click", () => {
-        state.currentDateKey = btn.dataset.jump;
-        state.ui.currentTab = "home";
-        persistAndRender(false);
-      });
-    });
-  }
-
-  function renderLibrary(){
-    renderCategoryChips();
-
-    $("#librarySearch").value = state.ui.librarySearch || "";
-    $("#sortSelect").value = state.ui.librarySort || "frequency";
-    $("#favoriteOnlyChip").classList.toggle("active", !!state.ui.libraryFavoriteOnly);
-
-    const listEl = $("#libraryList");
-    listEl.innerHTML = "";
-
-    const items = getFilteredLibrary();
-    if(!items.length){
-      listEl.innerHTML = `<div class="empty">条件に合う種目がありません。</div>`;
-    }else{
-      items.forEach(item => {
-        const stats = getExerciseStats(item.id);
-        const checked = state.ui.selectedLibraryIds.includes(item.id);
-
-        const row = document.createElement("div");
-        row.className = "library-item";
-        row.innerHTML = `
-          <input type="checkbox" ${checked ? "checked" : ""} />
-          <div class="thumb">${renderThumb(item.image, item.name)}</div>
-          <div>
-            <div class="lib-name">${escapeHtml(item.name)}</div>
-            <div class="lib-meta">
-              <span class="count-badge">${stats.days}回</span>
-              <span>${escapeHtml(item.category)}</span>
-              <span>${stats.lastDate ? `直近 ${stats.lastDate}` : "未実施"}</span>
-            </div>
-          </div>
-          <div class="lib-right">
-            <button class="star-btn ${item.isFavorite ? "on" : ""}" aria-label="bookmark">${item.isFavorite ? "★" : "☆"}</button>
-            <button class="info-btn" aria-label="info">i</button>
           </div>
         `;
-
-        const checkbox = row.children[0];
-        const star = row.querySelector(".star-btn");
-        const info = row.querySelector(".info-btn");
-
-        checkbox.addEventListener("change", () => {
-          toggleLibrarySelection(item.id, checkbox.checked);
-        });
-        star.addEventListener("click", () => {
-          item.isFavorite = !item.isFavorite;
-          saveState();
-          renderLibrary();
-        });
-        info.addEventListener("click", () => openLibraryInfoModal(item));
-
-        listEl.appendChild(row);
-      });
-    }
-
-    $("#selectedLibraryCount").textContent = `${state.ui.selectedLibraryIds.length}件選択中`;
-    $("#addSelectedExercisesBtn").disabled = state.ui.selectedLibraryIds.length === 0;
-  }
-
-  function renderCategoryChips(){
-    const wrap = $("#categoryChips");
-    wrap.innerHTML = "";
-    CATEGORIES.forEach(cat => {
-      const btn = document.createElement("button");
-      btn.className = `chip ${state.ui.libraryCategory === cat ? "active" : ""}`;
-      btn.textContent = cat;
-      btn.addEventListener("click", () => {
-        state.ui.libraryCategory = cat;
-        persistAndRender(false);
-        renderLibrary();
-      });
-      wrap.appendChild(btn);
-    });
-  }
-
-  function renderAnalytics(){
-    const allWorkouts = Object.values(state.workouts).filter(w => w.exercises && w.exercises.length);
-    const now = new Date();
-    const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
-
-    const monthDays = allWorkouts.filter(w => w.dateKey.startsWith(currentMonthKey)).length;
-    const totalLogs = allWorkouts.length;
-    const totalExercises = allWorkouts.reduce((a,w)=>a+w.exercises.length,0);
-    const totalSets = allWorkouts.reduce((a,w)=>a+w.exercises.reduce((x,e)=>x+e.sets.length,0),0);
-
-    $("#statMonthDays").textContent = monthDays;
-    $("#statTotalLogs").textContent = totalLogs;
-    $("#statTotalExercises").textContent = totalExercises;
-    $("#statTotalSets").textContent = totalSets;
-
-    const perExercise = aggregateExerciseStats();
-    renderVolumeChart(perExercise);
-    renderLatestRecords(perExercise);
-    renderBestVolumes(perExercise);
-  }
-
-  function renderVolumeChart(perExercise){
-    const el = $("#volumeChart");
-    el.innerHTML = "";
-    const items = Object.values(perExercise)
-      .sort((a,b)=>b.totalVolume - a.totalVolume)
-      .slice(0,8);
-
-    if(!items.length){
-      el.innerHTML = `<div class="empty">まだ分析できるデータがありません。</div>`;
-      return;
-    }
-
-    const max = Math.max(...items.map(i => i.totalVolume), 1);
-    items.forEach(item => {
-      const row = document.createElement("div");
-      row.className = "bar-row";
-      row.innerHTML = `
-        <div class="bar-wrap">
-          <div class="bar-label">${escapeHtml(item.name)}</div>
-          <div class="bar-track">
-            <div class="bar-fill" style="width:${(item.totalVolume / max) * 100}%"></div>
-          </div>
-        </div>
-        <div class="bar-val">${formatMetric(item.totalVolume)}</div>
-      `;
-      el.appendChild(row);
-    });
-  }
-
-  function renderLatestRecords(perExercise){
-    const el = $("#latestRecordsList");
-    el.innerHTML = "";
-    const items = Object.values(perExercise)
-      .sort((a,b)=>(b.lastDate || "").localeCompare(a.lastDate || ""))
-      .slice(0,10);
-
-    if(!items.length){
-      el.innerHTML = `<div class="empty">最新記録はまだありません。</div>`;
-      return;
-    }
-
-    items.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "list-item";
-      div.innerHTML = `
-        <div>
-          <div class="name">${escapeHtml(item.name)}</div>
-          <div class="meta">${item.lastDate || "未実施"} / ${item.lastSummary || "-"}</div>
-        </div>
-        <div class="right">
-          <div style="font-weight:800">${item.days}回</div>
-          <div class="meta">実施日数</div>
-        </div>
-      `;
-      el.appendChild(div);
-    });
-  }
-
-  function renderBestVolumes(perExercise){
-    const el = $("#bestVolumeList");
-    el.innerHTML = "";
-    const items = Object.values(perExercise)
-      .sort((a,b)=>b.bestVolume - a.bestVolume)
-      .slice(0,10);
-
-    if(!items.length){
-      el.innerHTML = `<div class="empty">最高ボリュームのデータがありません。</div>`;
-      return;
-    }
-
-    items.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "list-item";
-      div.innerHTML = `
-        <div>
-          <div class="name">${escapeHtml(item.name)}</div>
-          <div class="meta">${item.bestDate || "-"} に記録</div>
-        </div>
-        <div class="right">
-          <div style="font-weight:800">${formatMetric(item.bestVolume)}</div>
-          <div class="meta">最高</div>
-        </div>
-      `;
-      el.appendChild(div);
-    });
-  }
-
-  function toggleLibrarySelection(id, on){
-    if(on){
-      if(!state.ui.selectedLibraryIds.includes(id)) state.ui.selectedLibraryIds.push(id);
-    }else{
-      state.ui.selectedLibraryIds = state.ui.selectedLibraryIds.filter(x => x !== id);
-    }
-    saveState();
-    renderLibrary();
-  }
-
-  function addSelectedExercisesToCurrentWorkout(){
-    const selected = state.library.filter(i => state.ui.selectedLibraryIds.includes(i.id));
-    if(!selected.length) return;
-
-    const workout = getWorkout(state.currentDateKey);
-
-    selected.forEach(item => {
-      workout.exercises.push({
-        id: uid("ex"),
-        libraryId: item.id,
-        name: item.name,
-        category: item.category,
-        image: item.image,
-        memo: "",
-        isDetailOpen: false,
-        sets: [
-          {id:uid("set"), weight:"", reps:"", done:false}
-        ]
-      });
-    });
-
-    state.ui.selectedLibraryIds = [];
-    touchWorkout();
-    state.ui.currentTab = "home";
-    persistAndRender(false);
-    showToast("種目を追加しました");
-  }
-
-  function openLibraryInfoModal(item){
-    const s = getExerciseStats(item.id);
-    openModal(item.name, item.category, `
-      <div class="row" style="gap:12px;margin-bottom:12px">
-        <div class="thumb" style="width:72px;height:72px;flex:0 0 auto">${renderThumb(item.image, item.name)}</div>
-        <div class="grow">
-          <div style="font-weight:800;font-size:18px">${escapeHtml(item.name)}</div>
-          <div class="sub" style="margin-top:6px">${escapeHtml(item.category)}</div>
-        </div>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="label">実施日数</div>
-          <div class="value" style="font-size:20px">${s.days}</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">累計セット数</div>
-          <div class="value" style="font-size:20px">${s.totalSets}</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">累計回数</div>
-          <div class="value" style="font-size:20px">${s.totalReps}</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">累計ボリューム</div>
-          <div class="value" style="font-size:20px">${formatMetric(s.totalVolume)}</div>
-        </div>
-      </div>
-
-      <div class="card compact" style="margin-top:12px">
-        <div class="section-title">直近実施日</div>
-        <div class="hint">${s.lastDate || "未実施"}</div>
-      </div>
-    `);
-  }
-
-  function openCustomExerciseModal(){
-    openModal("新規種目追加", "ライブラリに登録", `
-      <div class="card compact">
-        <div class="section-title">種目名</div>
-        <input id="newExerciseName" type="text" placeholder="例：ケーブルプルオーバー" />
-        <div class="section-title" style="margin-top:12px">部位</div>
-        <select id="newExerciseCategory">
-          <option>胸</option>
-          <option>背筋</option>
-          <option>肩</option>
-          <option>腕</option>
-          <option>下半身</option>
-          <option>腹筋</option>
-        </select>
-        <div class="section-title" style="margin-top:12px">画像キー</div>
-        <input id="newExerciseImage" type="text" placeholder="未入力ならプレースホルダー" />
-        <div class="hint" style="margin-top:8px">image プロパティとして保存されます。</div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <button class="btn grow" id="saveNewExerciseBtn">追加する</button>
-      </div>
-    `);
-
-    $("#saveNewExerciseBtn").addEventListener("click", () => {
-      const name = $("#newExerciseName").value.trim();
-      const category = $("#newExerciseCategory").value;
-      const image = $("#newExerciseImage").value.trim() || "custom";
-      if(!name){
-        alert("種目名を入力してください。");
-        return;
       }
-      state.library.push({
-        id: uid("lib"),
-        name,
-        category,
-        image,
-        isFavorite:false,
-        createdAt:Date.now()
-      });
-      saveState();
-      closeModal();
-      renderLibrary();
-      showToast("ライブラリに追加しました");
-    });
-  }
 
-  function openRecentRecordsModal(libraryId){
-    const logs = findRecentExerciseLogs(libraryId, 8);
-    const lib = state.library.find(x => x.id === libraryId);
-    openModal(lib ? lib.name : "最近の記録", "直近の実施履歴", `
-      ${logs.length ? `
-        <div class="list-simple">
-          ${logs.map(log => `
-            <div class="list-item">
-              <div>
-                <div class="name">${log.dateKey}</div>
-                <div class="meta">${log.exercise.sets.map(s => `${num(s.weight) ? `${s.weight}kg×` : ""}${s.reps || 0}回`).join(" / ")}</div>
+      function getDiffSummary(currentEntry, prevEntry) {
+        const curLast = [...(currentEntry.sets || [])].filter(s => s.weight !== "" || s.reps !== "").slice(-1)[0];
+        const prevLast = [...(prevEntry.sets || [])].filter(s => s.weight !== "" || s.reps !== "").slice(-1)[0];
+        if (!curLast || !prevLast) return "差分なし";
+        const dw = (Number(curLast.weight) || 0) - (Number(prevLast.weight) || 0);
+        const dr = (Number(curLast.reps) || 0) - (Number(prevLast.reps) || 0);
+        const pw = dw === 0 ? "±0kg" : `${dw > 0 ? "+" : ""}${dw}kg`;
+        const pr = dr === 0 ? "±0回" : `${dr > 0 ? "+" : ""}${dr}回`;
+        return `${pw} / ${pr}`;
+      }
+
+      function renderSetRow(entry, set, idx) {
+        const prev = getPreviousSet(entry.exerciseMasterId, idx);
+        return `
+          <div class="set-row">
+            <div class="set-num">${idx + 1}</div>
+
+            <div class="field-stack">
+              <div class="field-label">重量</div>
+              <input
+                class="compact-input"
+                inputmode="decimal"
+                pattern="[0-9]*"
+                type="number"
+                min="0"
+                step="0.5"
+                value="${escapeHtml(set.weight)}"
+                data-set-input="${entry.id}"
+                data-set-index="${idx}"
+                data-field="weight"
+                placeholder="kg"
+              />
+              <div class="prev-inline">前回 ${prev ? `${prev.weight ?? 0}kg` : "-"}</div>
+            </div>
+
+            <div class="field-stack">
+              <div class="field-label">回数</div>
+              <input
+                class="compact-input"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                type="number"
+                min="0"
+                step="1"
+                value="${escapeHtml(set.reps)}"
+                data-set-input="${entry.id}"
+                data-set-index="${idx}"
+                data-field="reps"
+                placeholder="回"
+              />
+              <div class="prev-inline">前回 ${prev ? `${prev.reps ?? 0}回` : "-"}</div>
+            </div>
+
+            <div class="check-wrap">
+              <button class="check-btn ${set.completed ? "done" : ""}" data-complete-set="${entry.id}" data-set-index="${idx}" title="完了">
+                ${set.completed ? "✓" : "○"}
+              </button>
+              <div class="tiny muted">${calcSetVolume(set)}</div>
+            </div>
+
+            <button class="copy-btn" data-copy-set="${entry.id}" data-set-index="${idx}" title="前回値流用">⎘</button>
+          </div>
+        `;
+      }
+
+      function renderHome() {
+        const current = state.data.currentWorkout;
+        $("#workoutNameInput").value = current.name || "";
+        renderHomeStats();
+
+        const list = $("#homeExerciseList");
+        if (!current.exercises.length) {
+          list.innerHTML = `<div class="empty">種目がまだありません。<br>「＋ 種目追加」から始めてください。</div>`;
+        } else {
+          list.innerHTML = current.exercises.map(renderExerciseEntryCard).join("");
+        }
+
+        bindHomeEvents();
+      }
+
+      function renderHistory() {
+        const list = $("#historyList");
+        if (!state.data.workouts.length) {
+          list.innerHTML = `<div class="empty">履歴はまだありません。<br>ホーム右上の保存ボタンで保存できます。</div>`;
+          return;
+        }
+        list.innerHTML = state.data.workouts.map(w => `
+          <button class="history-card" data-history-detail="${w.id}" style="text-align:left;">
+            <div class="history-top">
+              <div class="grow">
+                <div style="font-weight:900;font-size:16px;">${escapeHtml(w.name || "トレーニング")}</div>
+                <div class="mini muted">${escapeHtml(formatDateLong(w.date))}</div>
               </div>
-              <div class="right">
-                <div style="font-weight:800">${exerciseHasWeight(log.exercise) ? formatMetric(exerciseVolume(log.exercise)) : `${exerciseTotalReps(log.exercise)}回`}</div>
-                <div class="meta">合計</div>
+              <span class="badge gray">${w.exerciseCount || 0}種目</span>
+            </div>
+            <div class="summary-row mt10">
+              <div class="stat-card">
+                <div class="stat-label">総セット</div>
+                <div class="stat-value">${w.totalSets || 0}</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">総ボリューム</div>
+                <div class="stat-value">${w.totalVolume || 0}</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">コピー</div>
+                <div class="stat-value" style="font-size:15px;">今日に複製</div>
               </div>
             </div>
-          `).join("")}
-        </div>
-      ` : `<div class="empty">まだ実施履歴がありません。</div>`}
-    `);
-  }
+          </button>
+        `).join("");
 
-  function openToolsModal(){
-    openModal("ツール", "保存・バックアップ・管理", `
-      <div class="menu-list">
-        <button class="menu-btn" id="tool-load-prev">前回のトレーニングを読み込む</button>
-        <button class="menu-btn" id="tool-export">JSONエクスポート</button>
-        <button class="menu-btn" id="tool-import">JSONインポート</button>
-        <button class="menu-btn red" id="tool-delete-all">全データ削除</button>
-      </div>
-    `);
-    $("#tool-load-prev").addEventListener("click", () => { closeModal(); handleLoadPrevWorkout(); });
-    $("#tool-export").addEventListener("click", () => { closeModal(); exportJson(); });
-    $("#tool-import").addEventListener("click", () => { closeModal(); $("#importFileInput").click(); });
-    $("#tool-delete-all").addEventListener("click", () => { closeModal(); deleteAllData(); });
-  }
-
-  function openModal(title, sub, html){
-    modalTitle.textContent = title || "";
-    modalSub.textContent = sub || "";
-    modalContent.innerHTML = html || "";
-    modalBackdrop.classList.add("show");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeModal(){
-    modalBackdrop.classList.remove("show");
-    document.body.style.overflow = "";
-  }
-
-  function showToast(text){
-    toastEl.textContent = text;
-    toastEl.classList.add("show");
-    clearTimeout(showToast.t);
-    showToast.t = setTimeout(() => toastEl.classList.remove("show"), 1800);
-  }
-
-  function shiftCurrentDate(days){
-    const d = parseDateKey(state.currentDateKey);
-    d.setDate(d.getDate() + days);
-    state.currentDateKey = formatDateKey(d);
-    state.ui.calendarSelectedDateKey = state.currentDateKey;
-    persistAndRender(false);
-  }
-
-  function touchWorkout(){
-    const workout = getWorkout(state.currentDateKey);
-    workout.updatedAt = Date.now();
-  }
-
-  function findExerciseInCurrent(id){
-    return getWorkout(state.currentDateKey).exercises.find(ex => ex.id === id);
-  }
-
-  function findPreviousWorkout(currentDateKey){
-    const keys = Object.keys(state.workouts)
-      .filter(k => k < currentDateKey && state.workouts[k].exercises && state.workouts[k].exercises.length)
-      .sort();
-    if(!keys.length) return null;
-    return state.workouts[keys[keys.length - 1]];
-  }
-
-  function findPreviousExerciseRecord(libraryId, beforeDateKey){
-    const keys = Object.keys(state.workouts)
-      .filter(k => k < beforeDateKey)
-      .sort()
-      .reverse();
-
-    for(const key of keys){
-      const workout = state.workouts[key];
-      const exercise = workout.exercises.find(ex => ex.libraryId === libraryId);
-      if(exercise){
-        return {dateKey:key, exercise};
-      }
-    }
-    return null;
-  }
-
-  function findRecentExerciseLogs(libraryId, limit=5){
-    const out = [];
-    const keys = Object.keys(state.workouts).sort().reverse();
-    for(const key of keys){
-      const workout = state.workouts[key];
-      const exercise = workout.exercises.find(ex => ex.libraryId === libraryId);
-      if(exercise){
-        out.push({dateKey:key, exercise});
-        if(out.length >= limit) break;
-      }
-    }
-    return out;
-  }
-
-  function cloneExerciseForDate(ex){
-    return {
-      id: uid("ex"),
-      libraryId: ex.libraryId,
-      name: ex.name,
-      category: ex.category,
-      image: ex.image,
-      memo: ex.memo || "",
-      isDetailOpen: false,
-      sets: (ex.sets || []).map(s => ({
-        id: uid("set"),
-        weight: s.weight ?? "",
-        reps: s.reps ?? "",
-        done: false
-      }))
-    };
-  }
-
-  function exerciseHasWeight(ex){
-    return ex.sets.some(s => num(s.weight) > 0);
-  }
-
-  function exerciseVolume(ex){
-    return (ex.sets || []).reduce((sum, s) => sum + (num(s.weight) * num(s.reps)), 0);
-  }
-
-  function exerciseTotalReps(ex){
-    return (ex.sets || []).reduce((sum, s) => sum + num(s.reps), 0);
-  }
-
-  function totalWorkoutVolume(workout){
-    return (workout.exercises || []).reduce((a, ex) => a + exerciseVolume(ex), 0);
-  }
-
-  function getExerciseStats(libraryId){
-    let days = 0, totalSets = 0, totalReps = 0, totalVolume = 0, lastDate = "";
-    Object.keys(state.workouts).sort().forEach(key => {
-      const workout = state.workouts[key];
-      const exs = workout.exercises.filter(ex => ex.libraryId === libraryId);
-      if(exs.length){
-        days++;
-        lastDate = key;
-        exs.forEach(ex => {
-          totalSets += ex.sets.length;
-          totalReps += exerciseTotalReps(ex);
-          totalVolume += exerciseVolume(ex);
+        $$("[data-history-detail]").forEach(btn => {
+          btn.addEventListener("click", () => openHistoryDetailSheet(btn.dataset.historyDetail));
         });
       }
-    });
-    return {days,totalSets,totalReps,totalVolume,lastDate};
-  }
 
-  function aggregateExerciseStats(){
-    const map = {};
-    Object.keys(state.workouts).sort().forEach(dateKey => {
-      const workout = state.workouts[dateKey];
-      workout.exercises.forEach(ex => {
-        if(!map[ex.libraryId]){
-          map[ex.libraryId] = {
-            libraryId: ex.libraryId,
-            name: ex.name,
-            category: ex.category,
-            totalVolume: 0,
-            bestVolume: 0,
-            bestDate: "",
-            lastDate: "",
-            lastSummary: "",
-            days: 0
-          };
-        }
-        const vol = exerciseVolume(ex);
-        map[ex.libraryId].totalVolume += vol;
-        map[ex.libraryId].days += 1;
-        map[ex.libraryId].lastDate = dateKey;
-        map[ex.libraryId].lastSummary = exerciseHasWeight(ex)
-          ? `${formatMetric(vol)} / ${ex.sets.length}セット`
-          : `${exerciseTotalReps(ex)}回 / ${ex.sets.length}セット`;
-
-        if(vol >= map[ex.libraryId].bestVolume){
-          map[ex.libraryId].bestVolume = vol;
-          map[ex.libraryId].bestDate = dateKey;
-        }
-      });
-    });
-    return map;
-  }
-
-  function getFilteredLibrary(){
-    const q = (state.ui.librarySearch || "").trim().toLowerCase();
-    const cat = state.ui.libraryCategory;
-    let items = state.library.filter(item => {
-      const matchQ = !q || item.name.toLowerCase().includes(q);
-      const matchC = cat === "すべて" || item.category === cat;
-      const matchF = !state.ui.libraryFavoriteOnly || item.isFavorite;
-      return matchQ && matchC && matchF;
-    });
-
-    if(state.ui.librarySort === "name"){
-      items.sort((a,b)=>a.name.localeCompare(b.name,"ja"));
-    }else if(state.ui.librarySort === "category"){
-      items.sort((a,b)=>(a.category+b.name).localeCompare(b.category+a.name,"ja"));
-    }else if(state.ui.librarySort === "newest"){
-      items.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-    }else{
-      items.sort((a,b)=>getExerciseStats(b.id).days - getExerciseStats(a.id).days);
-    }
-    return items;
-  }
-
-  function exportJson(){
-    const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `workout-backup-${formatDateKey(new Date())}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast("JSONをエクスポートしました");
-  }
-
-  function importJson(e){
-    const file = e.target.files && e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try{
-        const parsed = JSON.parse(String(reader.result));
-        if(!parsed || typeof parsed !== "object") throw new Error("invalid");
-        if(!confirm("JSONをインポートしますか？現在のデータは上書きされます。")) return;
-        state = parsed;
-        ensureStateShape();
-        saveState();
-        renderAll();
-        showToast("JSONをインポートしました");
-      }catch(err){
-        alert("JSONの読み込みに失敗しました。");
-      }finally{
-        $("#importFileInput").value = "";
+      function getFilteredExercises() {
+        const q = state.exerciseSearch.trim().toLowerCase();
+        return state.data.exercises.filter(ex => {
+          const byMuscle = state.exerciseFilter === "すべて" || ex.muscle === state.exerciseFilter;
+          const bySearch = !q || ex.name.toLowerCase().includes(q) || ex.muscle.toLowerCase().includes(q);
+          return byMuscle && bySearch;
+        });
       }
-    };
-    reader.readAsText(file);
-  }
 
-  function deleteAllData(){
-    if(!confirm("全データを削除しますか？この操作は元に戻せません。")) return;
-    if(!confirm("本当に削除しますか？")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    state = defaultState();
-    saveState();
-    renderAll();
-    showToast("全データを削除しました");
-  }
+      function renderExerciseLibraryCards(items, compactForSheet = false) {
+        if (!items.length) {
+          return `<div class="empty">該当する種目がありません。</div>`;
+        }
+        return items.map(ex => `
+          <div class="library-card">
+            <div class="library-top">
+              <div class="library-thumb">${getExerciseIconSvg(ex.muscle)}</div>
+              <div class="grow">
+                <div style="font-weight:800;">${escapeHtml(ex.name)}</div>
+                <div class="row wrap mt8" style="gap:6px;">
+                  <span class="badge gray">${escapeHtml(ex.muscle)}</span>
+                  <span class="badge gray">${getExerciseUseCount(ex.id)}回</span>
+                </div>
+              </div>
+              <button class="solid-btn" data-add-exercise="${ex.id}">追加</button>
+            </div>
+            <div class="mt10 mini muted">直近：${escapeHtml(getLastRecordSummary(ex.id))}</div>
+            ${compactForSheet ? "" : `
+              <div class="mt10 row" style="justify-content:flex-end;">
+                <button class="ghost-btn" data-edit-exercise="${ex.id}">編集</button>
+              </div>
+            `}
+          </div>
+        `).join("");
+      }
 
-  function renderPrevSummary(prev){
-    const ex = prev.exercise;
-    const summary = ex.sets.map(s => `${num(s.weight) ? `${s.weight}kg×` : ""}${s.reps || 0}回`).join(" / ");
-    const metric = exerciseHasWeight(ex) ? formatMetric(exerciseVolume(ex)) : `${exerciseTotalReps(ex)}回`;
-    return `${prev.dateKey} / ${summary || "-"} / 合計 ${metric}`;
-  }
+      function renderExerciseLibrary() {
+        const chips = $("#muscleFilterChips");
+        chips.innerHTML = getMuscles().map(m => `
+          <button class="chip ${state.exerciseFilter === m ? "active" : ""}" data-muscle-filter="${escapeHtml(m)}">${escapeHtml(m)}</button>
+        `).join("");
 
-  function deltaClass(delta){
-    if(delta == null) return "none";
-    if(delta > 0) return "plus";
-    if(delta < 0) return "minus";
-    return "none";
-  }
+        const list = $("#exerciseLibraryList");
+        const items = getFilteredExercises();
+        list.innerHTML = renderExerciseLibraryCards(items);
 
-  function uid(prefix="id"){
-    return prefix + "_" + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
-  }
+        $$("#muscleFilterChips [data-muscle-filter]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            state.exerciseFilter = btn.dataset.muscleFilter || "すべて";
+            renderExerciseLibrary();
+          });
+        });
+        $$("#exerciseLibraryList [data-add-exercise]").forEach(btn => {
+          btn.addEventListener("click", () => addExerciseToCurrentWorkout(btn.dataset.addExercise));
+        });
+        $$("#exerciseLibraryList [data-edit-exercise]").forEach(btn => {
+          btn.addEventListener("click", () => openCustomExerciseSheet(btn.dataset.editExercise));
+        });
+      }
 
-  function num(v){
-    const n = parseFloat(v);
-    return Number.isFinite(n) ? n : 0;
-  }
+      function renderSettings() {
+        toggleRender($("#settingIntervalEnabled"), !!state.data.settings.intervalEnabled);
+        toggleRender($("#settingAutoTimer"), !!state.data.settings.autoTimerStart);
+        toggleRender($("#settingSoundEnabled"), !!state.data.settings.soundEnabled);
+        toggleRender($("#settingVibrationEnabled"), !!state.data.settings.vibrationEnabled);
 
-  function sanitizeNumber(v, integer=false){
-    const cleaned = String(v).replace(integer ? /[^\d]/g : /[^\d.]/g, "");
-    return cleaned;
-  }
+        $("#settingIntervalMin").value = clamp(state.data.settings.intervalMinutes, 0, 59);
+        $("#settingIntervalSec").value = clamp(state.data.settings.intervalSeconds, 0, 59);
+      }
 
-  function formatMetric(n){
-    const val = Math.round((n + Number.EPSILON) * 10) / 10;
-    return `${val.toLocaleString("ja-JP")}kg`;
-  }
+      function toggleRender(btn, on) {
+        btn.classList.toggle("on", !!on);
+      }
 
-  function formatDateKey(date){
-    const y = date.getFullYear();
-    const m = String(date.getMonth()+1).padStart(2,"0");
-    const d = String(date.getDate()).padStart(2,"0");
-    return `${y}-${m}-${d}`;
-  }
+      function renderTopDate() {
+        $("#todayDateText").textContent = formatDateLong(state.data.currentWorkout.date);
+      }
 
-  function parseDateKey(key){
-    const [y,m,d] = key.split("-").map(Number);
-    return new Date(y, m-1, d);
-  }
+      function renderAll() {
+        renderTopDate();
+        renderTimer();
+        renderHome();
+        renderHistory();
+        renderExerciseLibrary();
+        renderSettings();
+      }
 
-  function startOfMonth(date){
-    return new Date(date.getFullYear(), date.getMonth(), 1);
-  }
+      // -----------------------------
+      // Event Binding
+      // -----------------------------
+      function bindHomeEvents() {
+        const home = $("#view-home");
+        const workoutNameInput = $("#workoutNameInput");
+        workoutNameInput.oninput = e => {
+          state.data.currentWorkout.name = e.target.value;
+          saveData();
+        };
 
-  function formatDateJP(date){
-    return `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`;
-  }
+        $$("[data-add-set]", home).forEach(btn => {
+          btn.addEventListener("click", () => addSet(btn.dataset.addSet));
+        });
+        $$("[data-load-prev]", home).forEach(btn => {
+          btn.addEventListener("click", () => copyPreviousWorkoutForExercise(btn.dataset.loadPrev));
+        });
+        $$("[data-delete-entry]", home).forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (confirm("この種目を削除しますか？")) removeExerciseEntry(btn.dataset.deleteEntry);
+          });
+        });
+        $$("[data-collapse]", home).forEach(btn => {
+          btn.addEventListener("click", () => toggleCollapseExercise(btn.dataset.collapse));
+        });
+        $$("[data-move-up]", home).forEach(btn => {
+          btn.addEventListener("click", () => moveExercise(btn.dataset.moveUp, -1));
+        });
+        $$("[data-move-down]", home).forEach(btn => {
+          btn.addEventListener("click", () => moveExercise(btn.dataset.moveDown, 1));
+        });
+        $$("[data-set-input]", home).forEach(inp => {
+          inp.addEventListener("input", e => {
+            updateSetField(e.target.dataset.setInput, Number(e.target.dataset.setIndex), e.target.dataset.field, e.target.value);
+          });
+        });
+        $$("[data-complete-set]", home).forEach(btn => {
+          btn.addEventListener("click", () => toggleSetComplete(btn.dataset.completeSet, Number(btn.dataset.setIndex)));
+        });
+        $$("[data-copy-set]", home).forEach(btn => {
+          btn.addEventListener("click", () => copyPrevSetIntoCurrent(btn.dataset.copySet, Number(btn.dataset.setIndex)));
+          btn.addEventListener("dblclick", () => duplicatePreviousSet(btn.dataset.copySet, Number(btn.dataset.setIndex)));
+        });
+      }
 
-  function escapeHtml(str){
-    return String(str ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
+      function bindGlobalEvents() {
+        // Tabs
+        $$(".tab-btn").forEach(btn => {
+          btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
+        });
 
-  function cssEscape(str){
-    if(window.CSS && CSS.escape) return CSS.escape(str);
-    return String(str).replace(/[^a-zA-Z0-9_-]/g, "\\$&");
-  }
+        // Buttons
+        $("#openExercisePickerBtn").addEventListener("click", openExercisePickerSheet);
+        $("#fabAddExercise").addEventListener("click", openExercisePickerSheet);
+        $("#openCustomExerciseBtn").addEventListener("click", () => openCustomExerciseSheet());
+        $("#closeSheetBtn").addEventListener("click", closeSheet);
+        $("#modalBackdrop").addEventListener("click", (e) => {
+          if (e.target.id === "modalBackdrop") closeSheet();
+        });
 
-  function renderThumb(imageKey, name){
-    const emojiMap = {
-      bench:"🏋️",
-      incline:"🟦",
-      lat:"⬇️",
-      row:"🚣",
-      shoulder:"🧍",
-      side:"💪",
-      curl:"🌀",
-      triceps:"🔽",
-      legpress:"🦵",
-      rdl:"⚙️",
-      smith:"🏗️",
-      calf:"🐄",
-      abs:"🔥",
-      legcurl:"↩️",
-      abduction:"↔️",
-      extension:"➡️",
-      adduction:"⇄",
-      custom:"✨"
-    };
-    const emoji = emojiMap[imageKey] || "🏋️";
-    return `
-      <svg viewBox="0 0 100 100" aria-label="${escapeHtml(name)}">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1">
-            <stop offset="0%" stop-color="#1d4ed8"/>
-            <stop offset="100%" stop-color="#60a5fa"/>
-          </linearGradient>
-        </defs>
-        <rect x="0" y="0" width="100" height="100" rx="18" fill="url(#g)" opacity="0.15"/>
-        <circle cx="50" cy="36" r="12" fill="#dbeafe" opacity="0.92"/>
-        <rect x="43" y="48" width="14" height="22" rx="6" fill="#dbeafe" opacity="0.92"/>
-        <rect x="26" y="48" width="16" height="8" rx="4" fill="#93c5fd" opacity="0.95"/>
-        <rect x="58" y="48" width="16" height="8" rx="4" fill="#93c5fd" opacity="0.95"/>
-        <text x="50" y="89" font-size="20" text-anchor="middle" fill="#dbeafe">${emoji}</text>
-      </svg>
-    `;
-  }
+        $("#saveWorkoutBtn").addEventListener("click", saveCurrentWorkoutToHistory);
+        $("#audioArmBtn").addEventListener("click", unlockAudio);
 
-})();
-</script>
+        $("#exerciseSearchInput").addEventListener("input", e => {
+          state.exerciseSearch = e.target.value.trim();
+          renderExerciseLibrary();
+        });
+
+        // Timer actions
+        $("#timerStartBtn").addEventListener("click", () => startTimer(getDefaultIntervalMs(), "手動開始"));
+        $("#timerPauseBtn").addEventListener("click", pauseTimer);
+        $("#timerResumeBtn").addEventListener("click", resumeTimer);
+        $("#timerResetBtn").addEventListener("click", resetTimer);
+
+        // Settings toggles
+        $("#settingIntervalEnabled").addEventListener("click", () => {
+          state.data.settings.intervalEnabled = !state.data.settings.intervalEnabled;
+          saveData(); renderSettings();
+        });
+        $("#settingAutoTimer").addEventListener("click", () => {
+          state.data.settings.autoTimerStart = !state.data.settings.autoTimerStart;
+          saveData(); renderSettings();
+        });
+        $("#settingSoundEnabled").addEventListener("click", () => {
+          state.data.settings.soundEnabled = !state.data.settings.soundEnabled;
+          saveData(); renderSettings();
+        });
+        $("#settingVibrationEnabled").addEventListener("click", () => {
+          state.data.settings.vibrationEnabled = !state.data.settings.vibrationEnabled;
+          saveData(); renderSettings();
+        });
+
+        $("#settingIntervalMin").addEventListener("input", e => {
+          state.data.settings.intervalMinutes = clamp(e.target.value, 0, 59);
+          saveData(); renderTimer();
+        });
+        $("#settingIntervalSec").addEventListener("input", e => {
+          state.data.settings.intervalSeconds = clamp(e.target.value, 0, 59);
+          saveData(); renderTimer();
+        });
+
+        $("#testNotificationBtn").addEventListener("click", () => {
+          unlockAudio();
+          beepPattern();
+          vibratePattern();
+          const t = timerState();
+          t.finished = true;
+          renderTimer();
+          clearTimeout(state.timerFlashTimeout);
+          state.timerFlashTimeout = setTimeout(() => {
+            t.finished = false;
+            renderTimer();
+          }, 2600);
+          toast("通知テストを実行しました");
+        });
+
+        // Data
+        $("#exportDataBtn").addEventListener("click", () => {
+          $("#dataTransferArea").value = JSON.stringify(state.data, null, 2);
+          toast("JSONを出力しました");
+        });
+        $("#importDataBtn").addEventListener("click", () => {
+          const text = $("#dataTransferArea").value.trim();
+          if (!text) {
+            toast("JSONを貼り付けてください");
+            return;
+          }
+          try {
+            const parsed = JSON.parse(text);
+            state.data = migrateData(parsed);
+            saveData();
+            restoreTimerLoopIfNeeded();
+            renderAll();
+            toast("JSONを読み込みました");
+          } catch (e) {
+            console.error(e);
+            toast("JSON形式が正しくありません");
+          }
+        });
+        $("#clearAllDataBtn").addEventListener("click", () => {
+          if (!confirm("全データを削除します。よろしいですか？")) return;
+          localStorage.removeItem(STORAGE_KEY);
+          state.data = createDefaultData();
+          resetTimer();
+          renderAll();
+          $("#dataTransferArea").value = "";
+          toast("全データを削除しました");
+        });
+
+        // Visibility restore for timer
+        document.addEventListener("visibilitychange", () => {
+          if (!document.hidden) {
+            restoreTimerLoopIfNeeded();
+            renderTimer();
+          }
+        });
+      }
+
+      function setActiveTab(tab) {
+        state.activeTab = tab;
+        $$(".tab-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
+        $$(".view").forEach(view => view.classList.remove("active"));
+        const view = $(`#view-${tab}`);
+        if (view) view.classList.add("active");
+        $("#fabAddExercise").classList.toggle("hidden", tab !== "home" && tab !== "exercises");
+      }
+
+      // -----------------------------
+      // Init
+      // -----------------------------
+      function init() {
+        loadData();
+        renderAll();
+        bindGlobalEvents();
+        restoreTimerLoopIfNeeded();
+        $("#audioArmBtn").style.opacity = state.audioUnlocked ? "1" : ".92";
+
+        // iPhone Safari: first tap often needed for audio unlock
+        ["touchstart", "mousedown", "keydown"].forEach(evt => {
+          window.addEventListener(evt, function onceUnlock() {
+            if (!state.audioUnlocked) unlockAudio();
+            window.removeEventListener(evt, onceUnlock, true);
+          }, true);
+        });
+      }
+
+      init();
+    })();
+  </script>
 </body>
 </html>
